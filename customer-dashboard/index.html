@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thunder Auto Hub — My Account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;
+  --card:#0f0f0f;
+  --surface:#141414;
+  --raised:#191919;
+  --border:#202020;
+  --border-h:#2e2e2e;
+  --gold:#F5C400;
+  --gold-mid:#C89B1D;
+  --gold-dim:rgba(245,196,0,0.07);
+  --gold-glow:rgba(245,196,0,0.18);
+  --text:#EFEFEF;
+  --muted:#7a7a7a;
+  --dim:#404040;
+  --green:#22c55e;
+  --blue:#4f8ef7;
+  --purple:#a78bfa;
+  --red:#f87171;
+  --sidebar:240px;
+  --nav:62px;
+  --r:14px;
+}
+html{font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;overflow-x:hidden}
+
+/* ---- SIDEBAR ---- */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);
+  background:var(--card);
+  border-right:1px solid var(--border);
+  height:100vh;position:sticky;top:0;
+  display:flex;flex-direction:column;
+  z-index:50;overflow:hidden;
+}
+.sb-brand{
+  height:var(--nav);display:flex;align-items:center;gap:10px;
+  padding:0 18px;border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sb-hex{
+  width:34px;height:34px;flex-shrink:0;
+  background:var(--gold);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display:flex;align-items:center;justify-content:center;
+}
+.sb-hex svg{width:16px;height:16px}
+.sb-name{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;letter-spacing:.4px;line-height:1.1}
+.sb-name small{display:block;font-size:10px;font-weight:400;font-family:'DM Sans',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:1px}
+
+.sb-profile{
+  margin:16px 12px;
+  padding:12px 14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.sb-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#2a2000,#4a3800);
+  border:2px solid var(--gold-mid);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;
+  color:var(--gold);flex-shrink:0;
+}
+.sb-user-name{font-size:13px;font-weight:600;color:var(--text)}
+.sb-pts{font-size:11px;color:var(--gold-mid);margin-top:2px;display:flex;align-items:center;gap:4px}
+.sb-pts-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+.sb-nav{flex:1;overflow-y:auto;padding:6px 8px}
+.sb-nav::-webkit-scrollbar{width:0}
+.sb-section{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--dim);padding:14px 10px 6px}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  height:38px;padding:0 10px;border-radius:9px;
+  cursor:pointer;transition:all .18s;
+  color:var(--muted);font-size:13px;font-weight:400;
+  margin-bottom:1px;text-decoration:none;
+  position:relative;
+}
+.nav-link:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.nav-link.active{background:var(--gold-dim);color:var(--gold)}
+.nav-link.active::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:18px;background:var(--gold);border-radius:0 3px 3px 0;
+}
+.nav-link svg{width:16px;height:16px;flex-shrink:0;stroke-width:1.6}
+.nav-badge{
+  margin-left:auto;min-width:18px;height:18px;
+  background:var(--gold);color:#000;
+  font-size:10px;font-weight:700;
+  border-radius:9px;padding:0 5px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.sb-book{
+  margin:10px 12px 12px;
+  height:40px;
+  background:var(--gold);color:#000;
+  border:none;border-radius:10px;
+  font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;
+  letter-spacing:1px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:all .15s;
+}
+.sb-book:hover{box-shadow:0 6px 24px rgba(245,196,0,0.28);transform:translateY(-1px)}
+.sb-book svg{width:15px;height:15px;stroke-width:2.5}
+
+.sb-bottom{padding:10px 8px;border-top:1px solid var(--border)}
+
+/* Sidebar loyalty widget */
+.sb-loyalty{
+  margin:0 12px 10px;
+  background:var(--surface);border:1px solid rgba(245,196,0,0.15);
+  border-radius:12px;padding:14px;
+  position:relative;overflow:hidden;
+}
+.sb-loyalty::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#CD7F32,#e8a96b,#CD7F32);
+}
+.sb-loy-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sb-loy-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(205,127,50,0.12);border:1px solid rgba(205,127,50,0.25);
+  border-radius:4px;padding:3px 7px;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:#CD7F32;
+}
+.sb-loy-badge svg{width:9px;height:9px;stroke:#CD7F32}
+.sb-loy-pts{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1;margin-bottom:1px}
+.sb-loy-sub{font-size:10px;color:var(--muted);margin-bottom:10px}
+.sb-loy-track{height:4px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:5px}
+.sb-loy-fill{height:100%;background:linear-gradient(90deg,#CD7F32,#e8a96b);border-radius:10px;width:0%}
+.sb-loy-hint{display:flex;justify-content:space-between;font-size:10px;color:var(--dim)}
+.sb-loy-hint span:last-child{color:#CD7F32}
+
+/* ---- MAIN ---- */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+/* TOP NAV */
+.topnav{
+  height:var(--nav);
+  background:var(--card);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:14px;
+  flex-shrink:0;position:sticky;top:0;z-index:40;
+}
+.topnav-title{font-family:'Oswald',sans-serif;font-size:20px;font-weight:600;letter-spacing:.3px}
+.topnav-sub{font-size:12px;color:var(--muted);margin-top:1px}
+
+.search{
+  margin-left:auto;
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:9px;height:34px;padding:0 12px;width:220px;
+  transition:border-color .2s,width .2s;
+}
+.search:focus-within{border-color:rgba(245,196,0,0.3);width:260px}
+.search svg{width:14px;height:14px;color:var(--dim);flex-shrink:0;stroke-width:2}
+.search input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);flex:1}
+.search input::placeholder{color:var(--dim)}
+
+.nav-actions{display:flex;align-items:center;gap:8px}
+.nav-icon{
+  width:34px;height:34px;border-radius:9px;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;color:var(--muted);
+  position:relative;
+}
+.nav-icon:hover{border-color:var(--border-h);color:var(--text)}
+.nav-icon svg{width:16px;height:16px;stroke-width:1.8}
+.notif-dot{
+  position:absolute;top:5px;right:5px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--gold);border:1.5px solid var(--card);
+}
+.nav-icon.book-btn{
+  width:auto;padding:0 14px;
+  background:var(--gold);border-color:var(--gold);
+  color:#000;font-family:'Oswald',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:1px;
+  gap:6px;white-space:nowrap;
+}
+.nav-icon.book-btn:hover{box-shadow:0 4px 18px rgba(245,196,0,0.28)}
+.nav-icon.book-btn svg{stroke:#000}
+
+/* ---- CONTENT ---- */
+.content{overflow-y:auto;flex:1;padding:24px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* --- HERO --- */
+.hero{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:28px 28px 24px;
+  margin-bottom:20px;
+  display:grid;grid-template-columns:1fr auto;gap:20px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;top:-60px;right:120px;
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,196,0,0.05) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;text-transform:uppercase;letter-spacing:2px;
+  color:var(--gold);margin-bottom:10px;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  animation:livepulse 2s infinite;
+}
+@keyframes livepulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,0.4)}70%{opacity:.7;box-shadow:0 0 0 5px rgba(34,197,94,0)}}
+.hero-name{
+  font-family:'Oswald',sans-serif;font-size:34px;font-weight:700;
+  color:var(--text);line-height:1;margin-bottom:14px;
+}
+.hero-appt{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,196,0,0.06);border:1px solid rgba(245,196,0,0.18);
+  border-radius:8px;padding:8px 14px;
+  font-size:13px;color:rgba(245,196,0,0.85);
+  margin-bottom:20px;
+}
+.hero-appt svg{width:14px;height:14px;flex-shrink:0}
+.hero-btns{display:flex;gap:8px}
+.btn{
+  height:36px;padding:0 16px;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:all .15s;border:1px solid transparent;
+}
+.btn svg{width:14px;height:14px;stroke-width:2}
+.btn-gold{background:var(--gold);color:#000;border-color:var(--gold)}
+.btn-gold:hover{box-shadow:0 4px 18px rgba(245,196,0,0.26);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);border-color:var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border-h)}
+
+/* Vehicle card in hero */
+.vehicle-widget{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px 20px;
+  min-width:220px;display:flex;flex-direction:column;
+  position:relative;z-index:1;
+}
+.vw-label{font-size:9.5px;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:10px}
+/* 2D car */
+.car-svg{margin-bottom:12px;display:block}
+.vw-model{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:3px}
+.vw-plate{font-size:11px;color:var(--muted);margin-bottom:14px}
+.vw-row{display:flex;gap:18px}
+.vw-stat-val{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}
+.vw-stat-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
+
+/* --- METRIC CARDS --- */
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.mc{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 18px 16px;
+  cursor:default;transition:border-color .2s,transform .2s;
+  position:relative;overflow:hidden;
+}
+.mc:hover{border-color:var(--border-h);transform:translateY(-2px)}
+.mc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mc-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.mc-icon svg{width:16px;height:16px;stroke-width:1.8}
+.mc-trend{font-size:11px;font-weight:500;display:flex;align-items:center;gap:3px}
+.mc-trend svg{width:11px;height:11px;stroke-width:2.5}
+.mc-val{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:4px}
+.mc-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.mc-bar{height:3px;background:var(--border);border-radius:2px;margin-top:14px;overflow:hidden}
+.mc-bar-fill{height:100%;border-radius:2px;transition:width 1s ease}
+
+/* --- MID GRID --- */
+.mid-grid{display:grid;grid-template-columns:1fr 260px;gap:14px;margin-bottom:18px}
+
+/* Upcoming services card */
+.upcoming-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;overflow:hidden;
+}
+.uc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.uc-title{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600}
+
+.svc-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);
+  margin-bottom:8px;transition:border-color .18s,transform .15s;
+  cursor:default;
+}
+.svc-item:last-child{margin-bottom:0}
+.svc-item:hover{border-color:var(--border-h);transform:translateX(2px)}
+.svc-date-block{
+  width:40px;flex-shrink:0;text-align:center;
+  background:var(--raised);border:1px solid var(--border);border-radius:8px;
+  padding:6px 0;
+}
+.svc-day{font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.svc-mon{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:2px}
+.svc-info{flex:1}
+.svc-name{font-size:13px;font-weight:500;margin-bottom:3px}
+.svc-meta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.svc-dot{width:3px;height:3px;border-radius:50%;background:var(--dim)}
+.svc-right{text-align:right;flex-shrink:0}
+.svc-price{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--gold)}
+.svc-status-tag{font-size:10px;font-weight:500;margin-top:3px}
+
+.uc-empty{
+  padding:20px;text-align:center;
+  border:1px dashed var(--border);border-radius:10px;
+}
+.uc-empty p{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* Service tracker card */
+.tracker-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;
+  display:flex;flex-direction:column;
+}
+.tc-head{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;margin-bottom:4px}
+.tc-ref{font-size:11px;color:var(--muted);margin-bottom:20px}
+
+.steps-wrap{position:relative;padding:0 8px}
+.steps-line{
+  position:absolute;top:14px;left:20px;right:20px;
+  height:1px;background:var(--border);
+}
+.steps-fill{
+  position:absolute;top:14px;left:20px;height:1px;
+  background:var(--gold);
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+}
+.steps{display:flex;justify-content:space-between;position:relative;z-index:2;margin-bottom:8px}
+.step{display:flex;flex-direction:column;align-items:center;gap:7px}
+.step-circ{
+  width:28px;height:28px;border-radius:50%;
+  border:1.5px solid var(--border);background:var(--card);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;font-size:12px;
+}
+.step-circ.done{background:var(--gold);border-color:var(--gold);color:#000}
+.step-circ.active{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 3px rgba(245,196,0,0.12)}
+.step-circ svg{width:12px;height:12px;stroke-width:2.5}
+.step-lbl{font-size:10px;color:var(--muted);text-align:center;white-space:nowrap}
+.step-lbl.done{color:var(--text)}
+.step-lbl.active{color:var(--gold)}
+
+.tc-info{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:9px;padding:12px;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-top:16px;
+}
+.tc-info-item .k{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.tc-info-item .v{font-size:13px;font-weight:500}
+.tc-total{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--gold)}
+
+/* --- BOTTOM GRID --- */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* Loyalty Banner */
+.loyalty-banner{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px 24px;
+  margin-bottom:18px;
+  display:grid;grid-template-columns:auto 1fr auto auto;
+  align-items:center;gap:24px;
+  position:relative;overflow:hidden;
+}
+.loyalty-banner::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(245,196,0,0.04) 0%,transparent 50%);
+  pointer-events:none;
+}
+.loyalty-banner::after{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-mid));
+  border-radius:var(--r) 0 0 var(--r);
+}
+.lb-icon-wrap{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(245,196,0,0.1);border:1px solid rgba(245,196,0,0.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  position:relative;z-index:1;
+}
+.lb-icon-wrap svg{width:22px;height:22px;stroke-width:1.6}
+.lb-info{position:relative;z-index:1}
+.lb-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
+.lb-title{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--text);line-height:1;margin-bottom:2px}
+.lb-sub{font-size:12px;color:var(--muted)}
+.lb-sub b{color:var(--gold-mid)}
+.lb-progress{min-width:200px;position:relative;z-index:1}
+.lb-prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.lb-prog-tier{font-size:12px;color:var(--muted)}
+.lb-prog-num{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--gold)}
+.lb-prog-track{height:6px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px}
+.lb-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-mid),var(--gold));border-radius:10px;transition:width 1s ease}
+.lb-prog-hint{font-size:11px;color:var(--dim)}
+.lb-prog-hint span{color:var(--gold-mid)}
+.lb-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0;position:relative;z-index:1}
+.lb-tier-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(245,196,0,0.08);border:1px solid rgba(245,196,0,0.2);
+  border-radius:6px;padding:6px 12px;
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;
+  color:var(--gold);white-space:nowrap;
+}
+.lb-tier-badge svg{width:11px;height:11px}
+.lb-cta{
+  height:32px;padding:0 14px;
+  background:var(--gold);color:#000;border:none;border-radius:7px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.lb-cta:hover{box-shadow:0 4px 16px rgba(245,196,0,0.25);transform:translateY(-1px)}
+
+/* Earn pts mini list */
+.lb-earn{display:flex;gap:20px;margin-top:10px}
+.lb-earn-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.lb-earn-item svg{width:12px;height:12px;stroke:var(--gold);stroke-width:2;flex-shrink:0}
+
+/* Loyalty card holder (physical card widget) */
+.loyalty-card-holder{
+  width:100%;aspect-ratio:1.586;
+  border-radius:14px;
+  background:linear-gradient(135deg,#1a0f00 0%,#2a1a00 40%,#1a0f00 100%);
+  border:1px solid rgba(205,127,50,0.3);
+  position:relative;overflow:hidden;
+  margin-bottom:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.6),inset 0 1px 0 rgba(205,127,50,0.2);
+}
+.lch-shine{
+  position:absolute;top:-40%;left:-20%;
+  width:70%;height:150%;
+  background:linear-gradient(105deg,transparent 40%,rgba(205,127,50,0.06) 50%,transparent 60%);
+  transform:rotate(-10deg);
+  pointer-events:none;
+}
+.lch-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(205,127,50,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(205,127,50,0.04) 1px,transparent 1px);
+  background-size:18px 18px;
+}
+.lch-glow{
+  position:absolute;bottom:-30px;right:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(205,127,50,0.12) 0%,transparent 70%);
+}
+.lch-top{
+  position:absolute;top:16px;left:18px;right:18px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.lch-brand{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:#CD7F32}
+.lch-chip{
+  width:32px;height:24px;border-radius:4px;
+  background:linear-gradient(135deg,#CD7F32,#e8a96b,#CD7F32);
+  position:relative;overflow:hidden;
+}
+.lch-chip::before{
+  content:'';position:absolute;top:50%;left:0;right:0;height:1px;
+  background:rgba(0,0,0,0.3);transform:translateY(-50%);
+}
+.lch-chip::after{
+  content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;
+  background:rgba(0,0,0,0.3);transform:translateX(-50%);
+}
+.lch-middle{
+  position:absolute;top:50%;left:18px;right:18px;
+  transform:translateY(-50%);
+}
+.lch-tier-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(205,127,50,0.7);margin-bottom:3px}
+.lch-tier-name{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#e8a96b;letter-spacing:1px}
+.lch-bottom{
+  position:absolute;bottom:14px;left:18px;right:18px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.lch-pts-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:rgba(205,127,50,0.6);margin-bottom:2px}
+.lch-pts-val{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#e8a96b;line-height:1}
+.lch-dots{display:flex;gap:3px;align-items:center}
+.lch-dot{width:6px;height:6px;border-radius:50%;background:rgba(205,127,50,0.4)}
+.lch-dot:last-child{background:rgba(205,127,50,0.2)}
+
+/* Loyalty card (bottom grid) */
+.loyalty-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;
+  position:relative;overflow:hidden;
+}
+.loyalty-card::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,196,0,0.06) 0%,transparent 70%);
+}
+.lc-tier{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(245,196,0,0.08);border:1px solid rgba(245,196,0,0.18);
+  border-radius:4px;padding:4px 9px;
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--gold);margin-bottom:14px;
+}
+.lc-tier svg{width:10px;height:10px}
+.lc-pts{font-family:'Oswald',sans-serif;font-size:42px;font-weight:700;line-height:1;margin-bottom:2px}
+.lc-pts-sub{font-size:11px;color:var(--muted);margin-bottom:20px}
+
+/* Ring SVG progress */
+.ring-wrap{display:flex;justify-content:center;margin-bottom:16px}
+
+.lc-prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px}
+.lc-prog-label span:last-child{color:var(--gold)}
+.lc-bar{height:5px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.lc-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-mid),var(--gold));border-radius:10px}
+.lc-next{font-size:12px;color:var(--muted)}
+.lc-next b{color:var(--gold-mid)}
+
+/* Quick actions */
+.qa-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.qa-title{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;margin-bottom:16px}
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qa-item{
+  padding:14px 12px;background:var(--surface);
+  border:1px solid var(--border);border-radius:10px;
+  cursor:pointer;transition:all .18s;
+  display:flex;flex-direction:column;gap:8px;
+}
+.qa-item:hover{border-color:rgba(245,196,0,0.25);background:rgba(245,196,0,0.03);transform:translateY(-1px)}
+.qa-ico{
+  width:28px;height:28px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+}
+.qa-ico svg{width:14px;height:14px;stroke-width:1.8}
+.qa-lbl{font-size:12px;font-weight:500;color:var(--text)}
+.qa-sub{font-size:11px;color:var(--muted)}
+
+/* History */
+.hist-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.hist-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.hist-title{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600}
+.view-all{font-size:12px;color:var(--gold-mid);background:none;border:none;cursor:pointer;transition:color .15s;display:flex;align-items:center;gap:4px}
+.view-all:hover{color:var(--gold)}
+.view-all svg{width:12px;height:12px;stroke-width:2}
+
+.hist-item{
+  display:flex;gap:12px;padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.hist-item:last-child{border-bottom:none;padding-bottom:0}
+.hist-timeline{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.hist-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--gold);background:var(--card);flex-shrink:0}
+.hist-track{width:1px;background:var(--border);flex:1;margin:3px 0}
+.hist-body{flex:1}
+.hist-date{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.hist-svc{font-size:13px;font-weight:500;margin-bottom:2px}
+.hist-car{font-size:11px;color:var(--muted);margin-bottom:8px}
+.hist-foot{display:flex;align-items:center;gap:8px}
+.hist-price{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--gold)}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:20px;font-size:10px;font-weight:500;
+}
+.pill::before{content:'';width:4px;height:4px;border-radius:50%}
+.pill-pending{background:rgba(245,196,0,0.09);color:var(--gold);border:1px solid rgba(245,196,0,0.2)}
+.pill-pending::before{background:var(--gold)}
+.pill-done{background:rgba(34,197,94,0.09);color:#4ade80;border:1px solid rgba(34,197,94,0.2)}
+.pill-done::before{background:#4ade80}
+.inv-btn{font-size:10px;color:var(--dim);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px}
+.inv-btn svg{width:10px;height:10px;stroke-width:2}
+.inv-btn:hover{color:var(--text);border-color:var(--border-h)}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .4s ease both}
+.fu1{animation-delay:.05s}.fu2{animation-delay:.1s}.fu3{animation-delay:.15s}
+.fu4{animation-delay:.2s}.fu5{animation-delay:.25s}.fu6{animation-delay:.3s}
+
+/* Skeleton shimmer */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton{
+  background:linear-gradient(90deg,var(--surface) 25%,var(--raised) 50%,var(--surface) 75%);
+  background-size:800px 100%;
+  animation:shimmer 1.4s infinite;
+  border-radius:4px;
+}
+
+/* Status indicator */
+.status-live{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;color:var(--green);font-weight:500;
+  text-transform:uppercase;letter-spacing:1px;
+}
+.status-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:livepulse 2s infinite}
+
+/* Mobile responsive */
+@media(max-width:1100px){
+  .metrics{grid-template-columns:repeat(3,1fr)}
+  .mc-loyalty{grid-column:span 3}
+  .mid-grid{grid-template-columns:1fr}
+  .bottom-grid{grid-template-columns:1fr 1fr}
+  .loyalty-banner{grid-template-columns:auto 1fr auto;gap:16px}
+  .lb-actions{flex-direction:row;align-items:center}
+}
+@media(max-width:800px){
+  .sidebar{display:none}
+  .metrics{grid-template-columns:1fr 1fr}
+  .mc-loyalty{grid-column:span 2}
+  .bottom-grid{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .vehicle-widget{display:none}
+  .search{display:none}
+  .loyalty-banner{grid-template-columns:auto 1fr;gap:12px}
+  .lb-progress{display:none}
+  .lb-actions{grid-column:1/-1}
+}
+@media(max-width:500px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .content{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-hex">
+      <svg viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round">
+        <path d="M8 2l4 2v4l-4 4L4 8V4z"/>
+      </svg>
+    </div>
+    <div class="sb-name">Thunder Auto Hub<small>My Account</small></div>
+  </div>
+
+  <div class="sb-profile">
+    <div class="sb-avatar">P</div>
+    <div>
+      <div class="sb-user-name">Poyo</div>
+      <div class="sb-pts"><span class="sb-pts-dot" style="background:#CD7F32"></span> 0 pts · Bronze tier</div>
+    </div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <a class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      My Bookings <span class="nav-badge">1</span>
+    </a>
+    <a class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3M9 21h10a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z"/></svg>
+      My Vehicles
+    </a>
+    <a class="nav-link" style="opacity:0.4;cursor:not-allowed;pointer-events:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Membership
+      <span style="margin-left:auto;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 6px;white-space:nowrap">Soon</span>
+    </a>
+    <a class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Messages
+    </a>
+    <div class="sb-section">Account</div>
+    <a class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </a>
+  </div>
+
+  <div class="sb-loyalty">
+    <div class="sb-loy-top">
+      <div class="sb-loy-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="currentColor"/></svg>
+        Bronze
+      </div>
+      <span style="font-size:10px;color:var(--dim)">0 / 500</span>
+    </div>
+    <div class="sb-loy-pts">0</div>
+    <div class="sb-loy-sub">Loyalty Points</div>
+    <div class="sb-loy-track"><div class="sb-loy-fill"></div></div>
+    <div class="sb-loy-hint"><span>Bronze → Silver</span><span>0%</span></div>
+  </div>
+
+  <div class="sb-bottom">
+    <a class="nav-link" id="signOutBtn" style="color:var(--red);cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Sign Out
+    </a>
+    <a class="nav-link" style="margin-top:2px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 18l-6-6 6-6"/></svg>
+      Back to Site
+    </a>
+  </div>
+
+  <button class="sb-book">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Book New Service
+  </button>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- Top Nav -->
+  <header class="topnav">
+    <div>
+      <div class="topnav-title">Dashboard</div>
+      <div class="topnav-sub">Tuesday, May 12, 2026</div>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search services, bookings...">
+    </div>
+    <div class="nav-actions">
+      <div class="nav-icon" title="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </div>
+      <div class="nav-icon" title="Help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+      </div>
+      <div class="nav-icon book-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Book Now
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- HERO -->
+    <div class="hero fu">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="live-dot"></span>
+          Good Evening
+        </div>
+        <h1 class="hero-name">Welcome back, Poyo!</h1>
+        <div class="hero-appt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Your Montero is scheduled tomorrow at 2:00 PM
+        </div>
+        <div class="hero-btns">
+          <button class="btn btn-gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Book Service
+          </button>
+          <button class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            View Booking
+          </button>
+        </div>
+      </div>
+      <div class="vehicle-widget">
+        <div class="vw-label">Primary Vehicle</div>
+        <div class="vw-model">Mitsubishi Montero</div>
+        <div class="vw-plate">ABC · 1234</div>
+        <div class="vw-row">
+          <div>
+            <div class="vw-stat-val">4</div>
+            <div class="vw-stat-lbl">Services</div>
+          </div>
+          <div>
+            <div class="vw-stat-val">Gold</div>
+            <div class="vw-stat-lbl">Status</div>
+          </div>
+          <div>
+            <div class="vw-stat-val">2026</div>
+            <div class="vw-stat-lbl">Year</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics">
+      <div class="mc fu fu1">
+        <div class="mc-top">
+          <div class="mc-icon" style="background:rgba(245,196,0,0.08)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </div>
+          <div class="mc-trend" style="color:var(--muted)">— New</div>
+        </div>
+        <div class="mc-val">0</div>
+        <div class="mc-lbl">Total Bookings</div>
+        <div class="mc-bar"><div class="mc-bar-fill" style="width:0%;background:var(--gold)"></div></div>
+      </div>
+      <div class="mc fu fu2">
+        <div class="mc-top">
+          <div class="mc-icon" style="background:rgba(79,142,247,0.08)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4f8ef7" stroke-width="1.8"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3m-4 10h10a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="mc-trend" style="color:var(--muted)">— None yet</div>
+        </div>
+        <div class="mc-val">0</div>
+        <div class="mc-lbl">My Vehicles</div>
+        <div class="mc-bar"><div class="mc-bar-fill" style="width:0%;background:#4f8ef7"></div></div>
+      </div>
+      <div class="mc fu fu3">
+        <div class="mc-top">
+          <div class="mc-icon" style="background:rgba(34,197,94,0.08)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div class="mc-trend" style="color:var(--muted)">— Pending</div>
+        </div>
+        <div class="mc-val">₱0</div>
+        <div class="mc-lbl">Total Spent</div>
+        <div class="mc-bar"><div class="mc-bar-fill" style="width:0%;background:var(--green)"></div></div>
+      </div>
+      <!-- Loyalty Points — rich inline card -->
+      <div class="mc mc-loyalty fu fu4" style="grid-column:span 2;background:var(--card);border:1px solid rgba(205,127,50,0.2);position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:linear-gradient(120deg,rgba(205,127,50,0.05) 0%,transparent 55%);pointer-events:none"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#CD7F32,transparent)"></div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1">
+          <div>
+            <div class="mc-top" style="margin-bottom:10px">
+              <div class="mc-icon" style="background:rgba(205,127,50,0.1);border:1px solid rgba(205,127,50,0.25)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#CD7F32" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(205,127,50,0.1);border:1px solid rgba(205,127,50,0.25);border-radius:4px;padding:3px 8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#CD7F32">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Bronze Tier
+              </div>
+            </div>
+            <div class="mc-val" style="font-size:32px">0 <span style="font-size:14px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400">pts</span></div>
+            <div class="mc-lbl" style="margin-bottom:14px">Loyalty Points</div>
+            <!-- Mini earn list -->
+            <div style="display:flex;gap:14px">
+              <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                +50 per booking
+              </div>
+              <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                +100 detailing
+              </div>
+              <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                +200 referral
+              </div>
+            </div>
+          </div>
+          <!-- Ring -->
+          <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
+            <circle cx="45" cy="45" r="36" fill="none" stroke="#202020" stroke-width="5"/>
+            <circle cx="45" cy="45" r="36" fill="none" stroke="#F5C400" stroke-width="5"
+              stroke-dasharray="226" stroke-dashoffset="226"
+              stroke-linecap="round" transform="rotate(-90 45 45)"/>
+            <text x="45" y="41" text-anchor="middle" font-family="Oswald,sans-serif" font-size="15" font-weight="700" fill="#EFEFEF">0%</text>
+            <text x="45" y="54" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#7a7a7a">to Silver</text>
+          </svg>
+        </div>
+        <!-- Progress bar -->
+        <div style="margin-top:14px;position:relative;z-index:1">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px">
+            <span>Bronze → Silver</span><span style="color:var(--gold-mid)">0 / 500 pts</span>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:10px;overflow:hidden">
+            <div style="height:100%;width:0%;background:linear-gradient(90deg,var(--gold-mid),var(--gold));border-radius:10px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOYALTY BANNER -->
+    <div class="loyalty-banner fu fu2">
+      <div class="lb-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F5C400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="lb-info">
+        <div class="lb-label">Loyalty Rewards</div>
+        <div class="lb-title">0 Points</div>
+        <div class="lb-sub">Book a service to start earning — <b>+50 pts</b> per booking</div>
+        <div class="lb-earn">
+          <div class="lb-earn-item">
+            <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+            +50 pts per booking
+          </div>
+          <div class="lb-earn-item">
+            <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+            +100 pts for detailing
+          </div>
+          <div class="lb-earn-item">
+            <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+            +200 pts referral bonus
+          </div>
+        </div>
+      </div>
+      <div class="lb-progress">
+        <div class="lb-prog-top">
+          <span class="lb-prog-tier">Bronze → Silver</span>
+          <span class="lb-prog-num">0 / 500 pts</span>
+        </div>
+        <div class="lb-prog-track"><div class="lb-prog-fill" style="width:0%"></div></div>
+        <div class="lb-prog-hint"><span>500 more points</span> to reach Silver tier</div>
+      </div>
+      <div class="lb-actions">
+        <div class="lb-tier-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Bronze Tier
+        </div>
+        <button class="lb-cta">Earn Points</button>
+      </div>
+    </div>
+
+    <!-- MID GRID: Upcoming + Tracker -->
+    <div class="mid-grid">
+      <!-- Upcoming Services -->
+      <div class="upcoming-card fu fu2">
+        <div class="uc-head">
+          <div class="uc-title">Upcoming Services</div>
+          <button class="view-all">
+            View All
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <!-- Booked item -->
+        <div class="svc-item">
+          <div class="svc-date-block">
+            <div class="svc-day">12</div>
+            <div class="svc-mon">May</div>
+          </div>
+          <div class="svc-info">
+            <div class="svc-name">Full Interior & Exterior Detailing</div>
+            <div class="svc-meta">
+              2:00 PM
+              <span class="svc-dot"></span>
+              Mitsubishi Montero
+              <span class="svc-dot"></span>
+              TAH-F8N4CA88
+            </div>
+          </div>
+          <div class="svc-right">
+            <div class="svc-price">₱389</div>
+            <div class="svc-status-tag" style="color:var(--gold)">Pending</div>
+          </div>
+        </div>
+
+        <div class="svc-item">
+          <div class="svc-date-block">
+            <div class="svc-day">13</div>
+            <div class="svc-mon">May</div>
+          </div>
+          <div class="svc-info">
+            <div class="svc-name">Ceramic Coating Package</div>
+            <div class="svc-meta">
+              10:00 AM
+              <span class="svc-dot"></span>
+              Mitsubishi Montero
+              <span class="svc-dot"></span>
+              TAH-EP4JCCC
+            </div>
+          </div>
+          <div class="svc-right">
+            <div class="svc-price">₱400</div>
+            <div class="svc-status-tag" style="color:var(--gold)">Pending</div>
+          </div>
+        </div>
+
+        <div class="svc-item">
+          <div class="svc-date-block">
+            <div class="svc-day">29</div>
+            <div class="svc-mon">May</div>
+          </div>
+          <div class="svc-info">
+            <div class="svc-name">Express Wash & Interior Wipe</div>
+            <div class="svc-meta">
+              9:00 AM
+              <span class="svc-dot"></span>
+              Mitsubishi Montero
+              <span class="svc-dot"></span>
+              TAH-6T38NW1J
+            </div>
+          </div>
+          <div class="svc-right">
+            <div class="svc-price">₱500</div>
+            <div class="svc-status-tag" style="color:var(--blue)">Confirmed</div>
+          </div>
+        </div>
+
+        <!-- Deposit notice -->
+        <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(245,196,0,0.04);border:1px solid rgba(245,196,0,0.12);border-radius:9px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span style="font-size:12px;color:var(--muted)">3 deposits outstanding</span>
+          </div>
+          <button style="font-size:11px;font-weight:600;color:#000;background:var(--gold);border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-family:'DM Sans',sans-serif">Pay Now</button>
+        </div>
+      </div>
+
+      <!-- Service Tracker -->
+      <div class="tracker-card fu fu3">
+        <div class="tc-head">Current Booking</div>
+        <div class="tc-ref">TAH-F8N4CA88 · Full Detailing</div>
+
+        <div class="steps-wrap">
+          <div class="steps-line"></div>
+          <div class="steps-fill" id="stepsFill" style="width:33%"></div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-circ done">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="step-lbl done">Booked</div>
+            </div>
+            <div class="step">
+              <div class="step-circ active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="step-lbl active">Confirmed</div>
+            </div>
+            <div class="step">
+              <div class="step-circ" style="color:var(--dim)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+              </div>
+              <div class="step-lbl">In Progress</div>
+            </div>
+            <div class="step">
+              <div class="step-circ" style="color:var(--dim)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 15 8 9 12 14 16 9 20 15"/></svg>
+              </div>
+              <div class="step-lbl">Finished</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tc-info">
+          <div class="tc-info-item">
+            <div class="k">Date</div>
+            <div class="v">May 12, 2026</div>
+          </div>
+          <div class="tc-info-item">
+            <div class="k">Time</div>
+            <div class="v">2:00 PM</div>
+          </div>
+          <div class="tc-info-item">
+            <div class="k">Service</div>
+            <div class="v">Detailing</div>
+          </div>
+          <div class="tc-info-item">
+            <div class="k">Total</div>
+            <div class="tc-total">₱389</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding:12px 14px;background:rgba(245,196,0,0.04);border:1px solid rgba(245,196,0,0.12);border-radius:9px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:12px;color:var(--muted)">Deposit outstanding</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">₱100 due</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+      <!-- Loyalty — Coming Soon -->
+      <div class="loyalty-card fu fu3" style="opacity:0.55;position:relative;user-select:none;">
+        <div style="position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(1px)">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 18px;text-align:center">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:2px">Coming Soon</div>
+            <div style="font-size:12px;color:var(--muted)">Full Loyalty Hub</div>
+          </div>
+        </div>
+        <div style="filter:grayscale(1)">
+          <!-- Physical loyalty card holder -->
+          <div class="loyalty-card-holder">
+            <div class="lch-shine"></div>
+            <div class="lch-grid"></div>
+            <div class="lch-glow"></div>
+            <div class="lch-top">
+              <div class="lch-brand">Thunder Auto Hub</div>
+              <div class="lch-chip"></div>
+            </div>
+            <div class="lch-middle">
+              <div class="lch-tier-label">Loyalty Tier</div>
+              <div class="lch-tier-name">BRONZE</div>
+            </div>
+            <div class="lch-bottom">
+              <div>
+                <div class="lch-pts-label">Points Balance</div>
+                <div class="lch-pts-val">000</div>
+              </div>
+              <div class="lch-dots">
+                <div class="lch-dot"></div>
+                <div class="lch-dot"></div>
+                <div class="lch-dot"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lc-tier">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Bronze Tier
+          </div>
+          <div class="lc-pts">0</div>
+          <div class="lc-pts-sub">Loyalty Points</div>
+          <div class="ring-wrap">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#202020" stroke-width="6"/>
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#555" stroke-width="6"
+                stroke-dasharray="277" stroke-dashoffset="277"
+                stroke-linecap="round" transform="rotate(-90 55 55)"/>
+              <text x="55" y="51" text-anchor="middle" font-family="Oswald,sans-serif" font-size="18" font-weight="700" fill="#555">0%</text>
+              <text x="55" y="67" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#404040">to Silver</text>
+            </svg>
+          </div>
+          <div class="lc-prog-label"><span>Bronze → Silver</span><span>0 / 500</span></div>
+          <div class="lc-bar"><div class="lc-bar-fill" style="width:0%;background:#444"></div></div>
+          <div class="lc-next" style="color:var(--dim)"><b style="color:var(--dim)">500 pts</b> to unlock Silver tier perks</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="qa-card fu fu4">
+        <div class="qa-title">Quick Actions</div>
+        <div class="qa-grid">
+          <div class="qa-item">
+            <div class="qa-ico" style="background:rgba(245,196,0,0.08)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+            <div class="qa-lbl">Book Service</div>
+            <div class="qa-sub">Schedule a visit</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-ico" style="background:rgba(79,142,247,0.08)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#4f8ef7" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div class="qa-lbl">View Invoice</div>
+            <div class="qa-sub">Download receipt</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-ico" style="background:rgba(34,197,94,0.08)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3M9 21h10a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="qa-lbl">Add Vehicle</div>
+            <div class="qa-sub">Register your car</div>
+          </div>
+          <div class="qa-item" style="opacity:0.4;cursor:not-allowed;pointer-events:none;filter:grayscale(1)">
+            <div class="qa-ico" style="background:rgba(80,80,80,0.08)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="qa-lbl" style="color:var(--dim)">Membership</div>
+            <div class="qa-sub" style="color:var(--dim);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Coming Soon</div>
+          </div>
+          <div class="qa-item" style="grid-column:span 2">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="qa-ico" style="background:rgba(248,113,113,0.08)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+              <div>
+                <div class="qa-lbl">Contact Support</div>
+                <div class="qa-sub">We reply within 2 hours</div>
+              </div>
+              <div style="margin-left:auto">
+                <div class="status-live">
+                  <span class="status-live-dot"></span>
+                  Live
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Membership — Coming Soon -->
+        <div style="margin-top:16px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;text-align:center;opacity:0.45;filter:grayscale(1);user-select:none;position:relative">
+          <div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);background:var(--raised);border:1px solid var(--border);border-radius:4px;padding:2px 7px">Soon</div>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#404040" stroke-width="1.4" style="margin:0 auto 8px"><circle cx="12" cy="8" r="4"/><path d="M2 20s2-6 10-6 10 6 10 6"/></svg>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--dim)">Membership Plans</div>
+          <div style="font-size:12px;color:var(--dim);margin-bottom:12px">Thunder Essential & Pro coming soon</div>
+          <div style="height:32px;background:var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--dim)">Coming Soon</div>
+        </div>
+      </div>
+
+      <!-- Service History -->
+      <div class="hist-card fu fu5">
+        <div class="hist-title-row">
+          <div class="hist-title">Service History</div>
+          <button class="view-all">
+            View All
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <!-- Empty state with proper car illustration -->
+        <div style="text-align:center;padding:20px 0 10px">
+          <svg width="140" height="72" viewBox="0 0 140 72" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 14px;display:block">
+            <!-- Ground shadow -->
+            <ellipse cx="70" cy="69" rx="58" ry="3" fill="rgba(255,255,255,0.04)"/>
+            <!-- Body -->
+            <rect x="8" y="38" width="124" height="16" rx="2.5" fill="rgba(40,40,40,0.6)" stroke="#2e2e2e" stroke-width="1.2"/>
+            <!-- Cabin roof -->
+            <path d="M32 38 L39 18 Q41 15 44 15 L96 15 Q99 15 101 18 L108 38 Z" fill="rgba(35,35,35,0.8)" stroke="#2e2e2e" stroke-width="1.2" stroke-linejoin="round"/>
+            <!-- Rear windshield -->
+            <path d="M33 38 L39 20 Q40 17 42 17 L47 17 L53 38 Z" fill="rgba(50,50,50,0.5)" stroke="#2e2e2e" stroke-width="0.9" stroke-linejoin="round"/>
+            <!-- Front windshield -->
+            <path d="M107 38 L101 20 Q100 17 98 17 L93 17 L87 38 Z" fill="rgba(50,50,50,0.5)" stroke="#2e2e2e" stroke-width="0.9" stroke-linejoin="round"/>
+            <!-- Side windows -->
+            <rect x="55" y="17" width="16" height="17" rx="1.5" fill="rgba(245,196,0,0.04)" stroke="#2e2e2e" stroke-width="0.9"/>
+            <rect x="74" y="17" width="16" height="17" rx="1.5" fill="rgba(245,196,0,0.04)" stroke="#2e2e2e" stroke-width="0.9"/>
+            <!-- Door line -->
+            <line x1="70" y1="38" x2="70" y2="54" stroke="#252525" stroke-width="0.8"/>
+            <!-- Side skirt -->
+            <rect x="8" y="52" width="124" height="4" rx="2" fill="rgba(35,35,35,0.5)" stroke="#2e2e2e" stroke-width="0.8"/>
+            <!-- Front bumper -->
+            <path d="M132 38 L135 40 Q136 43 136 47 L134 54 L132 54 Z" fill="rgba(35,35,35,0.6)" stroke="#2e2e2e" stroke-width="0.9"/>
+            <!-- Rear bumper -->
+            <path d="M8 38 L5 40 Q4 43 4 47 L6 54 L8 54 Z" fill="rgba(35,35,35,0.6)" stroke="#2e2e2e" stroke-width="0.9"/>
+            <!-- Headlight -->
+            <rect x="128" y="40" width="6" height="4" rx="1" fill="rgba(245,196,0,0.12)" stroke="#2e2e2e" stroke-width="0.8"/>
+            <!-- Taillight -->
+            <rect x="6" y="40" width="6" height="4" rx="1" fill="rgba(100,30,30,0.3)" stroke="#2e2e2e" stroke-width="0.8"/>
+            <!-- Wheel arches -->
+            <path d="M17 56 Q17 38 33 38 Q49 38 49 56" fill="rgba(15,15,15,0.9)" stroke="#2e2e2e" stroke-width="1.1"/>
+            <path d="M91 56 Q91 38 107 38 Q123 38 123 56" fill="rgba(15,15,15,0.9)" stroke="#2e2e2e" stroke-width="1.1"/>
+            <!-- Wheels -->
+            <circle cx="33" cy="57" r="10" fill="#0d0d0d" stroke="#2e2e2e" stroke-width="1.3"/>
+            <circle cx="33" cy="57" r="5.5" fill="none" stroke="#252525" stroke-width="0.9"/>
+            <circle cx="33" cy="57" r="1.5" fill="#1e1e1e"/>
+            <circle cx="107" cy="57" r="10" fill="#0d0d0d" stroke="#2e2e2e" stroke-width="1.3"/>
+            <circle cx="107" cy="57" r="5.5" fill="none" stroke="#252525" stroke-width="0.9"/>
+            <circle cx="107" cy="57" r="1.5" fill="#1e1e1e"/>
+            <!-- Gold sparkle stars -->
+            <path d="M58 6L59.2 9.2L62.5 9.5L60 11.5L60.9 14.7L58 12.8L55.1 14.7L56 11.5L53.5 9.5L56.8 9.2Z" fill="rgba(245,196,0,0.18)" stroke="#F5C400" stroke-width="0.7"/>
+            <path d="M108 4L108.8 6.2L111 6.4L109.3 7.9L109.9 10.1L108 8.9L106.1 10.1L106.7 7.9L105 6.4L107.2 6.2Z" fill="rgba(245,196,0,0.12)" stroke="#F5C400" stroke-width="0.6"/>
+          </svg>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px">No services yet</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">Your completed service history will appear here. Book your first service to get started.</div>
+          <button style="height:34px;padding:0 18px;background:var(--gold-dim);border:1px solid rgba(245,196,0,0.2);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--gold);cursor:pointer">
+            Book Your First Service
+          </button>
+        </div>
+
+        <!-- One existing booking to show -->
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:10px">Upcoming</div>
+          <div class="hist-item" style="border-bottom:none;padding-bottom:0">
+            <div class="hist-timeline">
+              <div class="hist-dot"></div>
+            </div>
+            <div class="hist-body">
+              <div class="hist-date">May 12, 2026</div>
+              <div class="hist-svc">Full Interior & Exterior Detailing</div>
+              <div class="hist-car">Mitsubishi Montero · ABC 1234</div>
+              <div class="hist-foot">
+                <div class="hist-price">₱389</div>
+                <span class="pill pill-pending">Pending</span>
+                <button class="inv-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                  Invoice
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Period tab toggle (kept for future use)
+document.querySelectorAll('.pt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.period-tabs').querySelectorAll('.pt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Hover lift on metric cards
+document.querySelectorAll('.mc, .qa-item').forEach(el => {
+  el.addEventListener('mouseenter', () => el.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)');
+  el.addEventListener('mouseleave', () => el.style.boxShadow = 'none');
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const { createClient } = supabase
+  const db = createClient('https://ykqjlniuvxgicjfunaso.supabase.co', 'sb_publishable_dZu4gFrNVVL7qscg60AwEQ_6Nc0xNbB')
+
+  document.body.style.visibility = 'hidden'
+
+  async function init() {
+    const { data: { session } } = await db.auth.getSession()
+    if (!session) { window.location.href = '/'; return }
+
+    // Load profile from Supabase
+    const { data: profile } = await db
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single()
+
+    if (profile) {
+      const firstName = profile.full_name.split(' ')[0]
+      const initials  = profile.full_name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase()
+      const pts       = profile.loyalty_points || 0
+      const tier      = profile.loyalty_tier || 'Bronze'
+
+      // Sidebar avatar + name
+      document.querySelector('.sb-avatar').textContent = initials
+      document.querySelector('.sb-user-name').textContent = profile.full_name
+      document.querySelector('.sb-pts').innerHTML = `<span class="sb-pts-dot" style="background:#CD7F32"></span> ${pts} pts · ${tier} tier`
+
+      // Hero welcome
+      document.querySelector('.hero-name').textContent = `Welcome back, ${firstName}!`
+
+      // Loyalty sidebar points
+      document.querySelector('.sb-loy-pts').textContent = pts
+    }
+
+    document.body.style.visibility = 'visible'
+  }
+  init()
+
+  // Sign out
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await db.auth.signOut()
+    window.location.href = '/'
+  })
+</script>
+
+</body>
+</html>

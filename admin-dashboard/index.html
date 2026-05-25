@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thunder Auto Hub — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #090909;
+    --sidebar-bg: #0C0C0C;
+    --card: #111111;
+    --elevated: #151515;
+    --border: #232323;
+    --gold: #F5C400;
+    --gold-soft: #C89B1D;
+    --gold-dim: rgba(245,196,0,0.08);
+    --gold-glow: rgba(245,196,0,0.15);
+    --text: #F5F5F5;
+    --text-2: #8A8A8A;
+    --text-3: #4A4A4A;
+    --green: #22C55E;
+    --red: #EF4444;
+    --sidebar-w: 220px;
+    --navbar-h: 58px;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+
+  .logo-area {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { width: 16px; height: 16px; fill: #090909; }
+  .logo-text { line-height: 1.2; }
+  .logo-text strong {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    display: block;
+  }
+  .logo-text span {
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .admin-chip {
+    margin: 14px 14px 10px;
+    padding: 10px 12px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #090909;
+    flex-shrink: 0;
+  }
+  .admin-chip .info strong { font-size: 12px; font-weight: 600; display: block; }
+  .admin-chip .info span { font-size: 10px; color: var(--gold); letter-spacing: 0.05em; }
+
+  .nav-section {
+    padding: 16px 14px 4px;
+  }
+  .nav-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 0 6px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 400;
+    text-decoration: none;
+    margin-bottom: 1px;
+    position: relative;
+  }
+  .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 1.6; }
+  .nav-item:hover { background: var(--elevated); color: var(--text); }
+  .nav-item.active {
+    background: var(--gold-dim);
+    color: var(--gold);
+    border: 1px solid rgba(245,196,0,0.18);
+  }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -1px; top: 25%; bottom: 25%;
+    width: 2px;
+    background: var(--gold);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 12px 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .sidebar-footer .nav-item { font-size: 12px; }
+
+  /* ── MAIN AREA ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── NAVBAR ── */
+  .navbar {
+    height: var(--navbar-h);
+    background: rgba(9,9,9,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 5;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+  .breadcrumb span { color: var(--text-3); }
+  .breadcrumb strong { color: var(--text); font-weight: 500; }
+
+  .search-bar {
+    flex: 1;
+    max-width: 340px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    height: 34px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 12px 0 34px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-bar input::placeholder { color: var(--text-3); }
+  .search-bar input:focus {
+    border-color: rgba(245,196,0,0.4);
+    box-shadow: 0 0 0 3px rgba(245,196,0,0.06);
+  }
+  .search-bar svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    stroke: var(--text-3);
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .icon-btn {
+    width: 34px; height: 34px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    position: relative;
+  }
+  .icon-btn:hover { background: #1a1a1a; border-color: #333; }
+  .icon-btn svg { width: 15px; height: 15px; stroke: var(--text-2); fill: none; stroke-width: 1.8; }
+
+  .notif-dot {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    border: 1.5px solid var(--bg);
+  }
+
+  .quick-action-btn {
+    height: 34px;
+    padding: 0 14px;
+    background: var(--gold);
+    color: #090909;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .quick-action-btn:hover { background: #e8b800; }
+  .quick-action-btn:active { transform: scale(0.98); }
+
+  .profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 4px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .profile-btn:hover { background: #1a1a1a; }
+  .profile-btn .avatar { width: 26px; height: 26px; font-size: 10px; }
+  .profile-btn span { font-size: 12px; font-weight: 500; }
+  .profile-btn svg { width: 12px; height: 12px; stroke: var(--text-3); fill: none; stroke-width: 2; }
+
+  /* ── CONTENT ── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px 24px 32px;
+    scrollbar-width: thin;
+    scrollbar-color: #232323 transparent;
+  }
+  .content::-webkit-scrollbar { width: 4px; }
+  .content::-webkit-scrollbar-track { background: transparent; }
+  .content::-webkit-scrollbar-thumb { background: #232323; border-radius: 2px; }
+
+  .page-header {
+    margin-bottom: 20px;
+  }
+  .page-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+
+  /* ── GRID LAYOUTS ── */
+  .grid-6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid-bottom {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 16px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245,196,0,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .stat-card:hover { border-color: #333; transform: translateY(-1px); }
+  .stat-card:hover::before { opacity: 1; }
+
+  .stat-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .stat-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stat-icon svg { width: 14px; height: 14px; stroke: var(--text-2); fill: none; stroke-width: 1.8; }
+  .stat-icon.gold svg { stroke: var(--gold); }
+
+  .trend-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .trend-up { background: rgba(34,197,94,0.12); color: var(--green); }
+  .trend-down { background: rgba(239,68,68,0.12); color: var(--red); }
+  .trend-neutral { background: var(--elevated); color: var(--text-3); }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 10.5px;
+    color: var(--text-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--text-2);
+    text-transform: uppercase;
+  }
+  .card-title-lg {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+  .card-action {
+    font-size: 11px;
+    color: var(--gold);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .card-action:hover { text-decoration: underline; }
+
+  .chart-wrap { position: relative; height: 180px; }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ── MINI CALENDAR ── */
+  .mini-cal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .cal-month {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--text);
+  }
+  .cal-nav {
+    display: flex; gap: 4px;
+  }
+  .cal-nav button {
+    width: 22px; height: 22px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-2);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .cal-nav button:hover { background: #1c1c1c; color: var(--text); }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+  }
+  .cal-dow {
+    font-size: 9px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 0;
+    font-weight: 600;
+  }
+  .cal-day {
+    font-size: 11px;
+    color: var(--text-2);
+    padding: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s;
+    line-height: 1.4;
+  }
+  .cal-day:hover { background: var(--elevated); }
+  .cal-day.today {
+    background: var(--gold);
+    color: #090909;
+    font-weight: 700;
+  }
+  .cal-day.has-event { position: relative; }
+  .cal-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 1px; left: 50%; transform: translateX(-50%);
+    width: 3px; height: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .cal-day.today.has-event::after { display: none; }
+  .cal-day.other-month { color: var(--text-3); }
+
+  /* ── SERVICE MIX ── */
+  .service-mix {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .mix-item { margin-bottom: 12px; }
+  .mix-item:last-child { margin-bottom: 0; }
+  .mix-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+  .mix-name { color: var(--text); font-weight: 500; }
+  .mix-pct { color: var(--text-2); font-family: 'DM Mono', monospace; font-size: 11px; }
+  .mix-bar-bg {
+    height: 3px;
+    background: var(--elevated);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .mix-bar { height: 100%; border-radius: 2px; }
+  .mix-bar.gold { background: var(--gold); }
+  .mix-bar.purple { background: #8B5CF6; }
+  .mix-bar.teal { background: #14B8A6; }
+
+  /* ── QUICK ACTIONS ── */
+  .quick-actions {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+  .qa-btn {
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 11px;
+    color: var(--text-2);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+  .qa-btn svg { display: block; width: 16px; height: 16px; margin: 0 auto 5px; stroke: var(--text-2); fill: none; stroke-width: 1.8; }
+  .qa-btn:hover { background: #1a1a1a; border-color: #333; color: var(--text); }
+  .qa-btn:hover svg { stroke: var(--gold); }
+
+  /* ── BOOKINGS TABLE ── */
+  .bookings-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .table-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    max-height: 260px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #232323 transparent;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--card);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(35,35,35,0.6);
+    transition: background 0.12s;
+    cursor: pointer;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--elevated); }
+  tbody td {
+    padding: 11px 14px;
+    font-size: 12.5px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .ref-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .customer-cell { display: flex; align-items: center; gap: 8px; }
+  .cust-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .vehicle-text { color: var(--text-2); font-size: 12px; }
+  .date-text { color: var(--text-2); font-size: 12px; font-family: 'DM Mono', monospace; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .status-pill::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .status-pending {
+    background: rgba(245,196,0,0.1);
+    color: var(--gold);
+    border: 1px solid rgba(245,196,0,0.2);
+  }
+  .status-completed {
+    background: rgba(34,197,94,0.08);
+    color: var(--green);
+    border: 1px solid rgba(34,197,94,0.18);
+  }
+  .status-overdue {
+    background: rgba(239,68,68,0.08);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,0.18);
+  }
+
+  .amount-text { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+
+  /* ── ALERTS ── */
+  .alerts-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .alert-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(35,35,35,0.6);
+    align-items: flex-start;
+  }
+  .alert-item:last-child { border-bottom: none; }
+  .alert-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .alert-gold { background: var(--gold); }
+  .alert-green { background: var(--green); }
+  .alert-red { background: var(--red); }
+  .alert-text { font-size: 11.5px; color: var(--text-2); line-height: 1.4; }
+  .alert-text strong { color: var(--text); }
+  .alert-time { font-size: 10px; color: var(--text-3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+  /* ── MOBILE NAV ── */
+  .mobile-nav { display: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .stat-card { animation: fadeUp 0.4s ease both; }
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.10s; }
+  .stat-card:nth-child(3) { animation-delay: 0.15s; }
+  .stat-card:nth-child(4) { animation-delay: 0.20s; }
+  .stat-card:nth-child(5) { animation-delay: 0.25s; }
+  .stat-card:nth-child(6) { animation-delay: 0.30s; }
+  .chart-card { animation: fadeUp 0.4s 0.25s ease both; }
+  .bookings-card, .alerts-card, .service-mix, .quick-actions, .mini-cal {
+    animation: fadeUp 0.4s 0.3s ease both;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .grid-6 { grid-template-columns: repeat(3, 1fr); }
+    .grid-main { grid-template-columns: 1fr; }
+    .grid-bottom { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { display: none; }
+    .grid-6 { grid-template-columns: repeat(2, 1fr); }
+    .content { padding: 16px 16px 80px; }
+    .page-header h1 { font-size: 26px; }
+    .mobile-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--sidebar-bg);
+      border-top: 1px solid var(--border);
+      z-index: 20;
+      padding: 8px 0 12px;
+    }
+    .mnav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 9.5px;
+      color: var(--text-3);
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .mnav-item.active { color: var(--gold); }
+    .mnav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .quick-action-btn span { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L14 5V11L8 15L2 11V5L8 1Z"/><path fill="#F5C400" d="M8 5L10 7L8 9L6 7L8 5Z"/></svg>
+    </div>
+    <div class="logo-text">
+      <strong>Thunder Auto Hub</strong>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <div class="admin-chip">
+    <div class="avatar">TA</div>
+    <div class="info">
+      <strong>Thunder Admin</strong>
+      <span>Super_admin</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Operations</div>
+    <a class="nav-item active">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M8 2v3M16 2v3M3 9h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+      Bookings
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Calendar
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Availability
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      Service Areas
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      Services
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Payments
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">People</div>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Customers
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Staff
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      Leads
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Inventory</div>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Inventory
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Communication</div>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Messages
+    </a>
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Broadcast
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <a class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View Website
+    </a>
+    <a class="nav-item" id="signOutBtn" style="cursor:pointer">
+  <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+  Sign Out
+</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="breadcrumb">
+      <span>Thunder Auto Hub</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <strong>Dashboard</strong>
+    </div>
+
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search bookings, customers...">
+    </div>
+
+    <div class="navbar-right">
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <button class="quick-action-btn"><span>+ New Booking</span></button>
+      <div class="profile-btn">
+        <div class="avatar">TA</div>
+        <span>Thunder Admin</span>
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p>Kamusta ang negosyo ngayon, Monday, May 11, 2026.</p>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="grid-6">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon gold">
+            <svg viewBox="0 0 24 24"><path d="M8 2v3M16 2v3M3 9h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+          </div>
+          <span class="trend-badge trend-neutral">+0%</span>
+        </div>
+        <div class="stat-value">4</div>
+        <div class="stat-label">Total Bookings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <span class="trend-badge trend-down">4 new</span>
+        </div>
+        <div class="stat-value">4</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <span class="trend-badge trend-neutral">–</span>
+        </div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Today's Jobs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <span class="trend-badge trend-up">+3</span>
+        </div>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Total Customers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon gold">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <span class="trend-badge trend-neutral">–</span>
+        </div>
+        <div class="stat-value" style="font-size:22px;">₱0</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="trend-badge trend-down">3 due</span>
+        </div>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Pending Payments</div>
+      </div>
+    </div>
+
+    <!-- CHART + RIGHT PANEL -->
+    <div class="grid-main">
+      <div class="chart-card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Weekly Revenue</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-top:2px;">₱0 <span style="font-size:13px;color:var(--text-3);font-family:'DM Sans',sans-serif;letter-spacing:0;font-weight:400;">vs last week</span></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:10px;color:var(--text-3);background:var(--elevated);border:1px solid var(--border);border-radius:6px;padding:4px 10px;">Week</span>
+            <span style="font-size:10px;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,196,0,0.18);border-radius:6px;padding:4px 10px;">Month</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <!-- MINI CALENDAR -->
+        <div class="mini-cal">
+          <div class="cal-header">
+            <div class="cal-month">May 2026</div>
+            <div class="cal-nav">
+              <button>&#8249;</button>
+              <button>&#8250;</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions">
+          <div class="card-title">Quick Actions</div>
+          <div class="qa-grid">
+            <div class="qa-btn">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              New Booking
+            </div>
+            <div class="qa-btn">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              Add Customer
+            </div>
+            <div class="qa-btn">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              New Invoice
+            </div>
+            <div class="qa-btn">
+              <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Reports
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS TABLE + SERVICE MIX + ALERTS -->
+    <div class="grid-bottom">
+      <div class="bookings-card">
+        <div class="table-header">
+          <div class="card-title-lg">Recent Bookings</div>
+          <span class="card-action">View all →</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ref</th>
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="ref-code">TAH-FBB4EA5B</span></td>
+                <td>
+                  <div class="customer-cell">
+                    <div class="cust-avatar" style="background:#1a2f1a;color:#22C55E;">PM</div>
+                    <span>Patrick Munoz</span>
+                  </div>
+                </td>
+                <td><span class="vehicle-text">Mitsubishi Montero</span></td>
+                <td><span class="date-text">May 12</span></td>
+                <td><span class="status-pill status-pending">Pending</span></td>
+                <td><span class="amount-text">₱399</span></td>
+              </tr>
+              <tr>
+                <td><span class="ref-code">TAH-OT7XRWCJ</span></td>
+                <td>
+                  <div class="customer-cell">
+                    <div class="cust-avatar" style="background:#2a1a1a;color:#EF4444;">GU</div>
+                    <span>Guest</span>
+                  </div>
+                </td>
+                <td><span class="vehicle-text">Mitsubishi Montero</span></td>
+                <td><span class="date-text">May 29</span></td>
+                <td><span class="status-pill status-pending">Pending</span></td>
+                <td><span class="amount-text">₱500</span></td>
+              </tr>
+              <tr>
+                <td><span class="ref-code">TAH-MN2KP8XT</span></td>
+                <td>
+                  <div class="customer-cell">
+                    <div class="cust-avatar" style="background:#1a1a2f;color:#8B5CF6;">JR</div>
+                    <span>Jose Reyes</span>
+                  </div>
+                </td>
+                <td><span class="vehicle-text">Toyota Fortuner</span></td>
+                <td><span class="date-text">May 15</span></td>
+                <td><span class="status-pill status-completed">Completed</span></td>
+                <td><span class="amount-text">₱1,200</span></td>
+              </tr>
+              <tr>
+                <td><span class="ref-code">TAH-QZ9RVL4C</span></td>
+                <td>
+                  <div class="customer-cell">
+                    <div class="cust-avatar" style="background:#2a1f0a;color:#F5C400;">AC</div>
+                    <span>Ana Cruz</span>
+                  </div>
+                </td>
+                <td><span class="vehicle-text">Honda CR-V</span></td>
+                <td><span class="date-text">May 08</span></td>
+                <td><span class="status-pill status-overdue">Overdue</span></td>
+                <td><span class="amount-text">₱850</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <!-- SERVICE MIX -->
+        <div class="service-mix">
+          <div class="card-header" style="margin-bottom:12px;">
+            <div class="card-title">Service Mix</div>
+            <span class="card-action" style="font-size:10px;">Revenue</span>
+          </div>
+          <div class="mix-item">
+            <div class="mix-row">
+              <span class="mix-name">Coating</span>
+              <span class="mix-pct">60%</span>
+            </div>
+            <div class="mix-bar-bg"><div class="mix-bar gold" style="width:60%"></div></div>
+          </div>
+          <div class="mix-item">
+            <div class="mix-row">
+              <span class="mix-name">Detailing</span>
+              <span class="mix-pct">25%</span>
+            </div>
+            <div class="mix-bar-bg"><div class="mix-bar purple" style="width:25%"></div></div>
+          </div>
+          <div class="mix-item">
+            <div class="mix-row">
+              <span class="mix-name">Wash</span>
+              <span class="mix-pct">15%</span>
+            </div>
+            <div class="mix-bar-bg"><div class="mix-bar teal" style="width:15%"></div></div>
+          </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div class="alerts-card">
+          <div class="card-header" style="margin-bottom:8px;">
+            <div class="card-title">Live Alerts</div>
+            <div class="notif-dot" style="position:static;width:7px;height:7px;background:var(--gold);border-radius:50%;"></div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-dot alert-gold"></div>
+            <div>
+              <div class="alert-text"><strong>Patrick Munoz</strong> submitted a new booking</div>
+              <div class="alert-time">2 min ago</div>
+            </div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-dot alert-red"></div>
+            <div>
+              <div class="alert-text">Payment for <strong>TAH-QZ9RVL4C</strong> is overdue</div>
+              <div class="alert-time">1 hr ago</div>
+            </div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-dot alert-green"></div>
+            <div>
+              <div class="alert-text"><strong>Jose Reyes</strong> booking marked complete</div>
+              <div class="alert-time">3 hrs ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <div class="mnav-item active">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Home
+  </div>
+  <div class="mnav-item">
+    <svg viewBox="0 0 24 24"><path d="M8 2v3M16 2v3M3 9h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+    Bookings
+  </div>
+  <div class="mnav-item">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    Customers
+  </div>
+  <div class="mnav-item">
+    <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    Payments
+  </div>
+  <div class="mnav-item">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profile
+  </div>
+</nav>
+
+<script>
+// ── CALENDAR ──
+(function() {
+  const grid = document.getElementById('calGrid');
+  const dows = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  dows.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-dow';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+  const year = 2026, month = 4;
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+  const eventDays = [12, 15, 18, 22, 29];
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const el = document.createElement('div');
+    el.className = 'cal-day other-month';
+    el.textContent = prevDays - i;
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    if (d === 11) el.classList.add('today');
+    if (eventDays.includes(d) && d !== 11) el.classList.add('has-event');
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+  const total = firstDay + daysInMonth;
+  const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let i = 1; i <= rem; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day other-month';
+    el.textContent = i;
+    grid.appendChild(el);
+  }
+})();
+
+// ── REVENUE CHART ──
+(function() {
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const data = [0, 399, 0, 500, 0, 0, 0];
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 170);
+  gradient.addColorStop(0, 'rgba(245,196,0,0.18)');
+  gradient.addColorStop(1, 'rgba(245,196,0,0)');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: '#F5C400',
+        borderWidth: 1.8,
+        backgroundColor: gradient,
+        pointBackgroundColor: '#F5C400',
+        pointBorderColor: '#090909',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#151515',
+          borderColor: '#232323',
+          borderWidth: 1,
+          titleColor: '#8A8A8A',
+          bodyColor: '#F5F5F5',
+          padding: 10,
+          titleFont: { family: 'DM Mono', size: 11 },
+          bodyFont: { family: 'DM Sans', size: 13, weight: '600' },
+          callbacks: {
+            label: ctx => `₱${ctx.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+          ticks: {
+            color: '#4A4A4A',
+            font: { family: 'DM Sans', size: 11 },
+          },
+          border: { display: false }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+          ticks: {
+            color: '#4A4A4A',
+            font: { family: 'DM Mono', size: 10 },
+            callback: v => `₱${v}`
+          },
+          border: { display: false },
+          beginAtZero: true,
+        }
+      }
+    }
+  });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const { createClient } = supabase
+  const db = createClient('https://ykqjlniuvxgicjfunaso.supabase.co', 'sb_publishable_dZu4gFrNVVL7qscg60AwEQ_6Nc0xNbB')
+
+  document.body.style.visibility = 'hidden'
+
+  async function init() {
+    const { data: { session } } = await db.auth.getSession()
+    if (!session || session.user.email !== 'thomasianhizon@gmail.com') {
+      window.location.href = '/'
+      return
+    }
+    document.body.style.visibility = 'visible'
+  }
+  init()
+
+  // Sign out
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await db.auth.signOut()
+    window.location.href = '/'
+  })
+</script>
+
+</body>
+</html>
