@@ -468,7 +468,7 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 ═══════════════════════════════════════════════ */
 #pricing{
   position:relative;z-index:10;
-  padding:48px 60px 52px;
+  padding:80px 0 90px;
   background:#000;
   overflow:hidden;
   height:fit-content;
@@ -498,29 +498,29 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
   letter-spacing:.06em;user-select:none;
 }
 
-.pricing-inner{position:relative;z-index:5}
+.pricing-inner{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:0 60px}
 
 /* ── TOP HEADER ROW ── */
 .pricing-header{
   display:flex;align-items:flex-end;justify-content:flex-start;
-  margin-bottom:20px;gap:32px;
+  margin-bottom:16px;gap:32px;
 }
 .pricing-left-head{flex:1}
 .pricing-eyebrow{
   font-family:var(--f-cond);font-size:11px;font-weight:700;
   letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
-  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;margin-bottom:8px;
 }
 .pricing-eyebrow::before{content:'';width:22px;height:1px;background:var(--gold)}
 .pricing-h2{
   font-family:var(--f-display);
-  font-size:clamp(54px,7vw,96px);
+  font-size:clamp(42px,5.5vw,76px);
   line-height:.9;color:var(--white);
 }
 .pricing-h2 em{color:var(--gold);font-style:normal}
 .pricing-sub{
-  font-size:14px;font-weight:300;color:var(--muted);
-  margin-top:10px;max-width:380px;line-height:1.65;
+  font-size:13px;font-weight:300;color:var(--muted);
+  margin-top:8px;max-width:380px;line-height:1.6;
 }
 
 /* Size selector — right side of header */
@@ -553,15 +553,15 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 /* ── LAYOUT: two columns ── */
 .pricing-layout{
   display:grid;
-  grid-template-columns:1fr 420px;
-  gap:20px;
+  grid-template-columns:1fr 400px;
+  gap:16px;
   align-items:start;
 }
 
 /* Pills row sits above the two-col layout, full width */
 .pricing-cats-row{
   display:flex;align-items:center;gap:6px;
-  margin-bottom:14px;flex-wrap:wrap;
+  margin-bottom:12px;flex-wrap:wrap;
 }
 .cats-divider{
   width:1px;height:20px;background:rgba(255,255,255,.08);margin:0 6px;
@@ -963,7 +963,8 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 @keyframes whyPageIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
 /* MEMBERSHIP — bento grid */
-#membership{position:relative;z-index:10;background:radial-gradient(ellipse 80% 60% at 20% 40%,rgba(245,197,24,.04) 0%,transparent 65%),radial-gradient(ellipse 50% 50% at 80% 60%,rgba(245,197,24,.025) 0%,transparent 70%),#000;padding:100px 60px 120px;overflow:hidden}
+#membership{position:relative;z-index:10;background:radial-gradient(ellipse 80% 60% at 20% 40%,rgba(245,197,24,.04) 0%,transparent 65%),radial-gradient(ellipse 50% 50% at 80% 60%,rgba(245,197,24,.025) 0%,transparent 70%),#000;padding:100px 0 120px;overflow:hidden}
+.mem-inner{max-width:1200px;margin:0 auto;padding:0 60px;position:relative;z-index:2}
 #membership::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(245,197,24,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(245,197,24,.016) 1px,transparent 1px);background-size:72px 72px;pointer-events:none}
 .mem-header{margin-bottom:64px;position:relative;z-index:2}
 .mem-eyebrow{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -1103,7 +1104,8 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 /* FIX: top gold stroke only on membership card */
 
 /* SERVICE AREA */
-#service-area{position:relative;z-index:10;background:#000000;padding:100px 60px;overflow:hidden}
+#service-area{position:relative;z-index:10;background:#000000;padding:100px 0;overflow:hidden}
+.area-inner{max-width:1200px;margin:0 auto;padding:0 60px;position:relative;z-index:2}
 .area-label{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .area-label::before{content:'';width:22px;height:1px;background:var(--gold)}
 .area-headline{font-family:var(--f-display);font-size:clamp(52px,7vw,92px);line-height:.9;margin-bottom:14px}
@@ -2365,6 +2367,8 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
 <!-- MEMBERSHIP — bento grid -->
 <section id="membership">
 
+  <div class="mem-inner">
+
   <!-- HEADER -->
   <div class="mem-header reveal">
     <div class="mem-eyebrow">Exclusive Access</div>
@@ -2560,10 +2564,11 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
     </div>
 
   </div>
-</section>
 
-<!-- SERVICE AREA -->
+  </div><!-- /mem-inner -->
+</section>
 <section id="service-area">
+  <div class="area-inner">
   <div class="deco-ring" style="width:400px;height:400px;top:-150px;right:-100px;border-color:rgba(245,197,24,0.04)"></div>
   <div class="area-label reveal">Coverage</div>
   <h2 class="area-headline reveal reveal-d1">DO WE SERVICE<br><span class="gold">YOUR AREA?</span></h2>
@@ -2598,6 +2603,7 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
       </div>
     </div>
   </div>
+  </div><!-- /area-inner -->
 </section>
 
 <!-- FOOTER -->
