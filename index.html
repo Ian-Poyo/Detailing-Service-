@@ -37,7 +37,7 @@ body.hov #cur-ring{width:48px;height:48px;border-color:rgba(245,197,24,.2)}
 @keyframes orbPulse{from{opacity:.5;transform:scale(1)}to{opacity:1;transform:scale(1.12)}}
 
 /* NAV — thunder auto hub text is white */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.92);backdrop-filter:blur(18px);transition:background .3s,box-shadow .3s}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.98);backdrop-filter:blur(24px);transition:background .3s,box-shadow .3s}
 nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo-icon{width:36px;height:36px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0}
@@ -130,7 +130,7 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* BUILT FOR OBSESSION */
-#obsession{position:relative;z-index:10;background:#000000;overflow:hidden;padding:100px 0 120px}
+#obsession{position:relative;z-index:10;background:#000000;overflow:hidden;padding:100px 0 120px;isolation:isolate;clip-path:inset(0 0 0 0)}
 .obs-inner{padding:0 60px;position:relative;z-index:2}
 .obs-section-label{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .obs-section-label::before{content:'';width:22px;height:1px;background:var(--gold)}
@@ -139,7 +139,7 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 
 
 /* Cover flow carousel */
-.cflow-stage{position:relative;width:100%;overflow:hidden;padding:40px 0 80px}
+.cflow-stage{position:relative;width:100%;overflow:hidden;padding:40px 0 80px;clip-path:inset(0 0 0 0)}
 .cflow-track{display:flex;align-items:center;justify-content:center;position:relative;height:500px}
 
 /* ── BASE CARD ─────────────────────────────────────────────── */
@@ -219,7 +219,8 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 /* ── ACTIVE CARD ── */
 .cf-card.is-active{
   z-index:10;
-  border-color:rgba(245,197,24,.45);
+  border-color:rgba(245,197,24,.35);
+  box-shadow:0 0 30px rgba(0,0,0,.8),0 0 0 1px rgba(245,197,24,.12);
 }
 
 /* ── INACTIVE CARDS ── */
@@ -462,50 +463,462 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
     linear-gradient(170deg,#090c0f 0%,#0d1114 40%,#080b0d 100%);
 }
 
-/* PRICING */
-#pricing{position:relative;z-index:10;padding:70px 60px 80px;background:#000000;overflow:hidden}
-.pricing-bg-text{position:absolute;top:40px;left:50%;transform:translateX(-50%);font-family:var(--f-display);font-size:clamp(120px,16vw,220px);color:transparent;-webkit-text-stroke:1px rgba(245,197,24,.04);white-space:nowrap;pointer-events:none;z-index:0;letter-spacing:.04em}
+/* ═══════════════════════════════════════════════
+   PRICING — Compact Accordion + Live Price Panel
+═══════════════════════════════════════════════ */
+#pricing{
+  position:relative;z-index:10;
+  padding:48px 60px 52px;
+  background:#000;
+  overflow:hidden;
+  height:fit-content;
+  isolation:isolate;
+  border-top:1px solid rgba(0,0,0,1);
+}
+
+/* Subtle scan-line bg texture */
+#pricing::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(
+    0deg,transparent,transparent 3px,
+    rgba(245,197,24,.012) 3px,rgba(245,197,24,.012) 4px
+  );
+  z-index:0;
+}
+
+/* Ghost watermark */
+.pricing-bg-text{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:var(--f-display);
+  font-size:clamp(130px,18vw,260px);
+  color:transparent;
+  -webkit-text-stroke:1px rgba(245,197,24,.028);
+  white-space:nowrap;pointer-events:none;z-index:0;
+  letter-spacing:.06em;user-select:none;
+}
+
 .pricing-inner{position:relative;z-index:5}
-/* FIX: fix layout — pricing header stacked, size+cats on same row */
-.pricing-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:24px}
+
+/* ── TOP HEADER ROW ── */
+.pricing-header{
+  display:flex;align-items:flex-end;justify-content:flex-start;
+  margin-bottom:20px;gap:32px;
+}
 .pricing-left-head{flex:1}
-.pricing-eyebrow{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pricing-eyebrow{
+  font-family:var(--f-cond);font-size:11px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
 .pricing-eyebrow::before{content:'';width:22px;height:1px;background:var(--gold)}
-.pricing-h2{font-family:var(--f-display);font-size:clamp(46px,5.5vw,72px);line-height:.9;color:var(--white)}
+.pricing-h2{
+  font-family:var(--f-display);
+  font-size:clamp(54px,7vw,96px);
+  line-height:.9;color:var(--white);
+}
 .pricing-h2 em{color:var(--gold);font-style:normal}
-.pricing-sub{font-size:13px;font-weight:300;color:var(--muted);margin-top:10px;max-width:280px;line-height:1.6}
-.pricing-cta-head{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;padding-top:6px}
-.size-selector{display:flex;border:1px solid rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
-.size-btn{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:none;color:var(--muted);padding:9px 18px;cursor:none;transition:background .2s,color .2s}
-.size-btn.active,.size-btn:hover{background:var(--gold);color:var(--bg)}
-.size-hint{font-size:11px;font-weight:300;color:#444;text-align:right}
-/* FIX: cats and size selector on the same row */
-.pricing-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-.pricing-cats{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.pricing-cat{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid rgba(255,255,255,.08);padding:8px 20px;border-radius:40px;cursor:none;transition:background .25s,color .25s,border-color .25s}
-.pricing-cat.active,.pricing-cat:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
-.pt-header-row{display:grid;grid-template-columns:1fr 160px 120px;padding:8px 20px;border-bottom:1px solid rgba(255,255,255,.04);margin-bottom:8px;font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#2a2a2a}
-.h-price{text-align:right}
-.h-book{text-align:center}
-.pt-group{margin-bottom:20px;border:1px solid rgba(255,255,255,.04);border-radius:10px;overflow:hidden}
-.pt-cat-head{background:rgba(255,255,255,.02);padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)}
-.pt-cat-label{font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#333}
-.pt-row{display:grid;grid-template-columns:1fr 160px 120px;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .2s}
-.pt-row:hover{background:rgba(255,255,255,.02)}
-.pt-row:last-child{border-bottom:none}
-.pt-popular{font-family:var(--f-cond);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
-.pt-svc-tag{display:inline-block;font-family:var(--f-cond);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.05);color:var(--muted);padding:2px 8px;border-radius:3px;margin-bottom:5px}
-.pt-svc-name{font-family:var(--f-cond);font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--white);margin-bottom:3px}
-.pt-svc-desc{font-size:11px;font-weight:300;color:#444;line-height:1.4}
-.pt-price-col{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-right:20px}
-.pt-travel{font-size:10px;color:#2a2a2a}
-.pt-old-price{font-size:11px;color:#333;text-decoration:line-through}
-.pt-price{font-family:var(--f-display);font-size:26px;letter-spacing:.04em;color:var(--white);line-height:1}
-.pt-price.gold{color:var(--gold)}
-.pt-price .peso{font-size:14px;margin-right:1px}
-.pt-badge{font-family:var(--f-cond);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:2px 7px;border-radius:3px;display:inline-block}
-.pt-book-btn{font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:9px 16px;border-radius:3px;display:flex;align-items:center;justify-content:center;gap:5px;cursor:none;border:none;transition:background .2s,transform .2s;white-space:nowrap}
-.pt-book-btn:hover{background:var(--gold2);transform:translateY(-1px)}
+.pricing-sub{
+  font-size:14px;font-weight:300;color:var(--muted);
+  margin-top:10px;max-width:380px;line-height:1.65;
+}
+
+/* Size selector — right side of header */
+.pricing-size-wrap{display:none}
+.size-selector{
+  display:flex;position:relative;
+  background:rgba(6,6,6,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:8px;overflow:hidden;
+  box-shadow:0 2px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
+}
+.size-track{
+  position:absolute;top:0;left:0;height:100%;
+  background:var(--gold);border-radius:4px;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;z-index:0;
+}
+.size-btn{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  background:transparent;border:none;color:var(--muted);
+  padding:7px 14px;cursor:none;
+  transition:color .2s;position:relative;z-index:1;
+}
+.size-btn.active{color:var(--bg)}
+.size-hint{font-size:11px;font-weight:300;color:#3a3a3a;text-align:right}
+
+/* ── LAYOUT: two columns ── */
+.pricing-layout{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:20px;
+  align-items:start;
+}
+
+/* Pills row sits above the two-col layout, full width */
+.pricing-cats-row{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:14px;flex-wrap:wrap;
+}
+.cats-divider{
+  width:1px;height:20px;background:rgba(255,255,255,.08);margin:0 6px;
+}
+
+.size-hint{font-size:11px;font-weight:300;color:rgba(255,255,255,.35);}
+
+/* ── LEFT: ACCORDION PANELS ── */
+.pricing-accordion{}
+/* Category pills — unified tab bar like size selector */
+.pricing-cats-pills{
+  display:flex;position:relative;
+  background:rgba(6,6,6,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:8px;overflow:hidden;
+  box-shadow:0 2px 16px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
+}
+.cats-track{
+  position:absolute;top:0;left:0;height:100%;
+  background:var(--gold);border-radius:6px;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;z-index:0;
+}
+.pricing-cat{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);background:transparent;border:none;
+  padding:7px 16px;
+  cursor:none;position:relative;z-index:1;
+  transition:color .2s;
+}
+.pricing-cat:hover{color:rgba(255,255,255,.7)}
+.pricing-cat.active{color:var(--bg)}
+
+/* Accordion group */
+.acc-group{
+  background:rgba(6,6,6,0.82);
+  backdrop-filter:blur(20px) saturate(120%);
+  -webkit-backdrop-filter:blur(20px) saturate(120%);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;overflow:hidden;
+  margin-bottom:8px;
+  box-shadow:0 4px 24px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);
+  transition:border-color .3s,box-shadow .3s;
+}
+.acc-group:hover{border-color:rgba(255,255,255,.12);box-shadow:0 6px 32px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+.acc-group.open{border-color:rgba(245,197,24,.22);box-shadow:0 6px 32px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+
+/* Group header — clickable */
+.acc-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 16px;
+  background:rgba(10,10,10,0.9);
+  cursor:none;
+  transition:background .25s;
+  position:relative;overflow:hidden;
+}
+.acc-head::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(245,197,24,.06) 0%,transparent 60%);
+  opacity:0;transition:opacity .35s;
+}
+.acc-group.open .acc-head::before,.acc-head:hover::before{opacity:1}
+
+.acc-head-left{display:flex;align-items:center;gap:12px}
+.acc-head-icon{
+  width:30px;height:30px;border-radius:8px;
+  background:rgba(245,197,24,.06);
+  border:1px solid rgba(245,197,24,.12);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .3s,border-color .3s,transform .3s;
+}
+.acc-group.open .acc-head-icon,.acc-head:hover .acc-head-icon{
+  background:rgba(245,197,24,.14);border-color:rgba(245,197,24,.3);
+  transform:scale(1.08);
+}
+.acc-head-icon svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.acc-cat-name{
+  font-family:var(--f-cond);font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.85);
+  transition:color .25s;
+}
+.acc-group.open .acc-cat-name,.acc-head:hover .acc-cat-name{color:#fff}
+.acc-count-badge{
+  font-family:var(--f-cond);font-size:9px;font-weight:700;
+  letter-spacing:.1em;color:rgba(245,197,24,.85);
+  background:rgba(245,197,24,.09);border:1px solid rgba(245,197,24,.2);
+  padding:2px 8px;border-radius:20px;
+}
+
+.acc-head-right{display:flex;align-items:center;gap:10px}
+.acc-range{
+  font-family:var(--f-display);font-size:16px;
+  color:rgba(255,255,255,.8);letter-spacing:.04em;
+  transition:color .3s;
+}
+.acc-group.open .acc-range,.acc-head:hover .acc-range{color:var(--gold)}
+.acc-chevron{
+  width:20px;height:20px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .25s,transform .35s cubic-bezier(.4,0,.2,1),background .25s;
+  flex-shrink:0;
+}
+.acc-chevron svg{width:10px;height:10px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s}
+.acc-group.open .acc-chevron{
+  transform:rotate(180deg);
+  border-color:rgba(245,197,24,.3);background:rgba(245,197,24,.08);
+}
+.acc-group.open .acc-chevron svg,.acc-head:hover .acc-chevron svg{stroke:var(--gold)}
+
+/* Accordion body */
+.acc-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .45s cubic-bezier(.4,0,.2,1);
+}
+.acc-group.open .acc-body{max-height:1000px}
+
+/* Service rows inside accordion */
+.acc-svc-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  padding:10px 16px 10px 52px;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(8,8,8,0.88);
+  cursor:none;
+  transition:background .2s;
+  position:relative;
+  gap:10px;
+}
+.acc-svc-row::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--gold);opacity:0;
+  transition:opacity .25s;
+}
+.acc-svc-row:hover{background:rgba(20,20,20,0.95)}
+.acc-svc-row:hover::after,.acc-svc-row.active::after{opacity:1}
+.acc-svc-row.active{background:rgba(245,197,24,.06)}
+
+.acc-svc-info{min-width:0}
+.acc-popular-tag{
+  font-family:var(--f-cond);font-size:7px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:2px;display:flex;align-items:center;gap:4px;
+}
+.acc-popular-tag::before{content:'★';font-size:8px}
+.acc-svc-name{
+  font-family:var(--f-cond);font-size:13px;font-weight:700;
+  letter-spacing:.06em;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:color .2s;
+}
+.acc-svc-row:hover .acc-svc-name,.acc-svc-row.active .acc-svc-name{color:#fff}
+.acc-svc-desc{
+  font-size:10.5px;font-weight:300;color:#888;
+  margin-top:1px;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:color .2s;
+}
+.acc-svc-row:hover .acc-svc-desc,.acc-svc-row.active .acc-svc-desc{color:#555}
+
+.acc-svc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.acc-price{
+  font-family:var(--f-display);font-size:20px;
+  letter-spacing:.04em;color:rgba(255,255,255,.75);
+  line-height:1;transition:color .25s;
+  white-space:nowrap;
+}
+.acc-price .acc-peso{font-size:11px;margin-right:1px;vertical-align:top;margin-top:3px;display:inline-block}
+.acc-svc-row:hover .acc-price,.acc-svc-row.active .acc-price{color:var(--gold)}
+.acc-price.is-gold{color:var(--gold)}
+.acc-old{font-size:10px;color:#444;text-decoration:line-through;white-space:nowrap}
+.acc-price-col{text-align:right}
+
+.acc-book-dot{
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;cursor:none;flex-shrink:0;
+  transition:border-color .25s,background .25s,transform .2s;
+}
+.acc-book-dot svg{width:10px;height:10px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;transition:stroke .25s,transform .2s}
+.acc-svc-row:hover .acc-book-dot,.acc-svc-row.active .acc-book-dot{
+  border-color:var(--gold);background:var(--gold);
+  transform:scale(1.1);
+}
+.acc-svc-row:hover .acc-book-dot svg,.acc-svc-row.active .acc-book-dot svg{
+  stroke:#000;
+}
+
+/* ── RIGHT: LIVE PRICE PANEL ── */
+.pricing-panel{
+  position:sticky;top:80px;
+  align-self:start;
+  background:rgba(6,6,6,0.85);
+  backdrop-filter:blur(28px) saturate(120%);
+  -webkit-backdrop-filter:blur(28px) saturate(120%);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;overflow:hidden;
+  min-height:420px;
+  box-shadow:0 8px 60px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* Panel top bar */
+.panel-topbar{
+  height:2px;
+  background:linear-gradient(90deg,transparent 3%,rgba(245,197,24,.35) 20%,rgba(255,215,60,.7) 50%,rgba(245,197,24,.35) 80%,transparent 97%);
+}
+
+.panel-body{padding:28px 28px}
+
+/* Idle state (no service selected) */
+.panel-idle{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 16px;gap:10px;
+  min-height:270px;
+}
+.panel-idle-icon{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(245,197,24,.05);border:1px solid rgba(245,197,24,.12);
+  display:flex;align-items:center;justify-content:center;
+  animation:idlePulse 3s ease-in-out infinite;
+}
+@keyframes idlePulse{0%,100%{box-shadow:0 0 0 0 rgba(245,197,24,.0)}50%{box-shadow:0 0 0 10px rgba(245,197,24,.06)}}
+.panel-idle-icon svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.3}
+.panel-idle-text{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#555}
+.panel-idle-sub{font-size:11px;font-weight:300;color:#3a3a3a;line-height:1.5}
+
+/* Active state */
+.panel-active{display:none}
+.panel-active.visible{display:block}
+.panel-svc-tag{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(245,197,24,.85);
+  margin-bottom:5px;
+}
+.panel-svc-title{
+  font-family:var(--f-display);font-size:32px;letter-spacing:.04em;
+  color:#fff;line-height:1;margin-bottom:6px;
+}
+.panel-svc-desc{
+  font-size:13px;font-weight:300;color:rgba(255,255,255,.5);
+  line-height:1.5;margin-bottom:16px;
+}
+
+/* Big animated price display */
+.panel-price-block{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:18px 20px;
+  margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.panel-price-block::before{
+  content:'';position:absolute;
+  top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(245,197,24,.06),transparent);
+  animation:panelSheen 3s ease-in-out infinite;
+}
+@keyframes panelSheen{0%{left:-60%}100%{left:160%}}
+.panel-price-label{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(245,197,24,.85);margin-bottom:8px;
+}
+.panel-price-row{display:flex;align-items:flex-start;gap:4px}
+.panel-peso{
+  font-family:var(--f-display);font-size:26px;color:rgba(245,197,24,.8);
+  line-height:1;margin-top:10px;
+}
+.panel-price-num{
+  font-family:var(--f-display);font-size:76px;letter-spacing:.03em;
+  color:var(--gold);line-height:1;text-shadow:0 0 40px rgba(245,197,24,.28);
+}
+.panel-price-num.animate-in{animation:priceFlipIn .3s cubic-bezier(0,.5,.3,1) both}
+.panel-price-num.animate-out{animation:priceFlipOut .18s cubic-bezier(.4,0,1,1) forwards}
+@keyframes priceFlipIn{from{opacity:0;transform:translateY(12px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes priceFlipOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-12px) scale(.92)}}
+.panel-old-price{
+  font-size:13px;color:#666;text-decoration:line-through;
+  margin-top:5px;
+}
+.panel-travel-note{
+  font-size:10px;color:#555;margin-top:3px;font-weight:300;
+}
+
+/* Size selector inside panel */
+.panel-size-label{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);margin-bottom:8px;
+}
+.panel-size-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:5px;margin-bottom:12px;
+}
+.psz{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09);
+  color:#777;padding:9px 4px;border-radius:7px;
+  cursor:none;text-align:center;
+  transition:background .2s,border-color .2s,color .2s,transform .18s;
+}
+.psz:hover{background:rgba(255,255,255,.06);color:#aaa;transform:translateY(-1px)}
+.psz.active{
+  background:rgba(245,197,24,.1);
+  border-color:rgba(245,197,24,.35);
+  color:var(--gold);
+  transform:translateY(-1px);
+}
+.psz-sub{display:block;font-family:var(--f-body);font-size:8px;font-weight:300;letter-spacing:0;text-transform:none;color:inherit;opacity:.6;margin-top:2px}
+
+/* CTA */
+.panel-cta{
+  width:100%;
+  font-family:var(--f-cond);font-size:13px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:#000;background:var(--gold);
+  border:none;padding:16px;
+  border-radius:10px;
+  cursor:none;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.panel-cta::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gold2);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.panel-cta:hover::before{transform:scaleX(1)}
+.panel-cta:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(245,197,24,.38)}
+.panel-cta span,.panel-cta svg{position:relative;z-index:1}
+.panel-cta svg{width:11px;height:11px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;transition:transform .2s}
+.panel-cta:hover svg{transform:translateX(3px)}
+
+.panel-disclaimer{
+  font-size:10px;font-weight:300;color:#444;
+  text-align:center;margin-top:10px;line-height:1.5;
+}
+
+/* ── Animations for hidden pricing rows ── */
+.acc-group{
+  animation:none;
+}
+.pt-hide{display:none!important}
+
+/* size selector legacy (keep for accordion compat) */
+.size-selector .size-btn{cursor:none}
+.size-hint{font-size:11px;font-weight:300;color:#3a3a3a;text-align:right}
 
 /* WHY TRUST US */
 #why-us{position:relative;z-index:10;background:#000000;padding:100px 0;overflow:hidden}
@@ -549,61 +962,145 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 .why-page-enter{animation:whyPageIn .55s cubic-bezier(.22,.68,0,1.2) both}
 @keyframes whyPageIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-/* MEMBERSHIP — pure black background */
-#membership{position:relative;z-index:10;background:#000000;padding:100px 60px;overflow:hidden}
-.mem-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(245,197,24,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(245,197,24,.022) 1px,transparent 1px);background-size:80px 80px;pointer-events:none}
-.mem-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto}
-.mem-label{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.mem-label::before{content:'';width:22px;height:1px;background:var(--gold)}
-.mem-headline{font-family:var(--f-display);font-size:clamp(52px,7vw,92px);line-height:.9;margin-bottom:14px}
-.mem-headline .gold{color:var(--gold)}
-.mem-sub{font-size:14px;font-weight:300;color:var(--muted);max-width:480px;line-height:1.7;margin-bottom:56px}
-.mem-card-wrap{display:flex;flex-direction:column;gap:24px}
+/* MEMBERSHIP — bento grid */
+#membership{position:relative;z-index:10;background:radial-gradient(ellipse 80% 60% at 20% 40%,rgba(245,197,24,.04) 0%,transparent 65%),radial-gradient(ellipse 50% 50% at 80% 60%,rgba(245,197,24,.025) 0%,transparent 70%),#000;padding:100px 60px 120px;overflow:hidden}
+#membership::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(245,197,24,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(245,197,24,.016) 1px,transparent 1px);background-size:72px 72px;pointer-events:none}
+.mem-header{margin-bottom:64px;position:relative;z-index:2}
+.mem-eyebrow{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.mem-eyebrow::before{content:'';width:22px;height:1px;background:var(--gold)}
+.mem-h2{font-family:var(--f-display);font-size:clamp(54px,7vw,94px);line-height:.88;letter-spacing:.01em;margin-bottom:20px}
+.mem-h2 .g{color:var(--gold)}
+.mem-desc{font-size:14px;font-weight:300;color:var(--muted);line-height:1.75;max-width:420px}
+.bento-mem{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;position:relative;z-index:2}
+.b-card{background:rgba(10,8,3,0.55);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;position:relative;will-change:transform;box-shadow:0 8px 48px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06);transition:border-color .4s cubic-bezier(.4,0,.2,1),box-shadow .4s cubic-bezier(.4,0,.2,1)}
+.b-card:hover{border-color:rgba(245,197,24,.28);box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 0 0.5px rgba(245,197,24,.18),inset 0 1px 0 rgba(255,255,255,.09)}
+.b-card.featured::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:5;background:linear-gradient(90deg,transparent 5%,rgba(245,197,24,.65) 25%,rgba(255,215,60,1) 50%,rgba(245,197,24,.65) 75%,transparent 95%);box-shadow:0 0 14px rgba(245,197,24,.25)}
+.b-main{grid-column:1/8;grid-row:1;display:flex;flex-direction:column}
+.b-steps{grid-column:8/13;grid-row:1;padding:32px 36px;display:flex;flex-direction:column;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.10);
+  box-shadow:0 8px 48px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.08),0 0 0 0.5px rgba(245,197,24,.08);
+  position:relative;overflow:hidden;
+}
+.b-stat1{grid-column:1/5;grid-row:2}
+.b-stat2{grid-column:5/9;grid-row:2}
+.b-stat3{grid-column:9/13;grid-row:2}
+.b-main-top{padding:36px 40px 28px;border-bottom:1px solid rgba(245,197,24,.07);position:relative;overflow:hidden;background:rgba(245,197,24,.025)}
+.b-main-top::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 0% 0%,rgba(245,197,24,.07) 0%,transparent 65%);pointer-events:none;transition:opacity .5s}
+.b-main:hover .b-main-top::before{opacity:1.4}
+.b-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:var(--f-cond);font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:16px}
+.b-badge svg{width:8px;height:8px;fill:#000;flex-shrink:0}
+.b-plan-name{font-family:var(--f-display);font-size:56px;letter-spacing:.03em;color:#fff;line-height:1;margin-bottom:8px}
+.b-plan-tag{font-size:12px;font-weight:300;color:var(--muted);max-width:340px;line-height:1.6}
+.b-price-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:16px}
+.b-size-tabs{display:flex;gap:4px;position:relative}
+.tab-slider{position:absolute;bottom:0;left:0;height:100%;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.28);border-radius:3px;transition:left .32s cubic-bezier(.4,0,.2,1),width .32s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:0}
+.b-size-tab{font-family:var(--f-cond);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid rgba(255,255,255,.08);color:var(--muted);padding:4px 11px;border-radius:3px;cursor:pointer;transition:color .25s;position:relative;z-index:1;outline:none}
+.b-size-tab.active{color:var(--gold)}
+.b-size-tab:not(.active):hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.15)}
+.b-price{display:flex;align-items:flex-start;gap:2px;position:relative;overflow:hidden}
+.b-price-peso{font-family:var(--f-display);font-size:32px;color:rgba(245,197,24,.7);margin-top:10px;line-height:1}
+.b-price-val{font-family:var(--f-display);font-size:74px;letter-spacing:.02em;color:var(--gold);line-height:1;display:block;min-width:160px;}
+.b-price-val.flip-out{animation:priceOut .18s cubic-bezier(.4,0,1,1) forwards}
+.b-price-val.flip-in{animation:priceIn .22s cubic-bezier(0,.5,.3,1) forwards}
+@keyframes priceOut{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-14px) scale(.94)}}
+@keyframes priceIn{0%{opacity:0;transform:translateY(14px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.b-price-period{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,197,24,.55);align-self:flex-end;padding-bottom:10px;margin-left:4px}
+.b-main-body{padding:28px 40px 36px;flex:1}
+.b-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.b-tag{font-family:var(--f-cond);font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:4px 10px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.28);transition:background .2s,border-color .2s,color .2s,transform .2s;cursor:default}
+.b-tag:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);transform:translateY(-1px)}
+.b-tag.hi{background:rgba(245,197,24,.07);border-color:rgba(245,197,24,.18);color:rgba(245,197,24,.7)}
+.b-tag.hi:hover{background:rgba(245,197,24,.12);border-color:rgba(245,197,24,.3);color:var(--gold)}
+.b-benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px}
+.b-benefit{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:rgba(255,255,255,.022);border:1px solid rgba(255,255,255,.05);border-radius:10px;transition:border-color .28s,background .28s,transform .28s;cursor:default}
+.b-benefit:hover{background:rgba(245,197,24,.04);border-color:rgba(245,197,24,.16);transform:translateY(-2px)}
+.b-check{width:20px;height:20px;border-radius:50%;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:background .28s,border-color .28s,transform .28s}
+.b-benefit:hover .b-check{background:rgba(245,197,24,.18);border-color:rgba(245,197,24,.5);transform:scale(1.1)}
+.b-check svg{width:10px;height:10px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-dasharray:12;stroke-dashoffset:12;transition:stroke-dashoffset .35s .05s cubic-bezier(.4,0,.2,1)}
+.b-benefit:hover .b-check svg{stroke-dashoffset:0}
+.b-benefit-text{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+.b-benefit-text strong{color:#fff;font-weight:600;display:block;margin-bottom:1px}
+.b-benefit.flash{animation:benefitFlash .4s ease forwards}
+@keyframes benefitFlash{0%{background:rgba(245,197,24,.0)}30%{background:rgba(245,197,24,.08);border-color:rgba(245,197,24,.22)}100%{background:rgba(255,255,255,.022);border-color:rgba(255,255,255,.05)}}
+.b-cta-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.btn-join{font-family:var(--f-cond);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#000;background:var(--gold);padding:14px 32px;border-radius:4px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden;transition:transform .22s cubic-bezier(.4,0,.2,1),box-shadow .22s}
+.btn-join::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.btn-join:hover::before{transform:scaleX(1)}
+.btn-join:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(245,197,24,.42)}
+.btn-join:active{transform:translateY(0) scale(.98)}
+.btn-join span{position:relative;z-index:1}
+.btn-join svg{position:relative;z-index:1;width:12px;height:12px;stroke:#000;fill:none;stroke-width:2;transition:transform .22s}
+.btn-join:hover svg{transform:translateX(3px)}
+.b-fine{font-size:11px;font-weight:300;color:#2e2e2e;line-height:1.6}
+/* Glassmorphism extras for b-steps */
+.b-steps::before{
+  content:'';
+  position:absolute;top:-80px;right:-60px;
+  width:280px;height:280px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(245,197,24,.07) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
+.b-steps::after{
+  content:'';
+  position:absolute;bottom:-60px;left:-40px;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(245,197,24,.04) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.b-steps .b-steps-label,.b-steps .b-timeline{position:relative;z-index:1}
+.b-steps-glass-topedge{
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,rgba(255,255,255,0.14) 30%,rgba(245,197,24,.35) 50%,rgba(255,255,255,0.14) 70%,transparent 95%);
+  z-index:2;pointer-events:none;
+}
+
+/* B-STEPS LABEL clearer */
+.b-steps-label{font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,197,24,.7);margin-bottom:28px;flex-shrink:0}
+
+/* Step title and text clearer */
+.b-step-title{font-family:var(--f-cond);font-size:16px;font-weight:700;letter-spacing:.06em;color:#fff;margin-bottom:5px;line-height:1.2;transition:color .28s}
+.b-step-text{font-size:12.5px;font-weight:300;color:rgba(255,255,255,.55);line-height:1.65}
+.b-step-node{width:30px;height:30px;border-radius:50%;border:1px solid rgba(245,197,24,.25);background:rgba(245,197,24,.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;transition:border-color .3s,background .3s,box-shadow .3s}
+
+
+.b-timeline{display:flex;flex-direction:column;flex:1;justify-content:space-between;gap:12px}
+.b-step{display:grid;grid-template-columns:24px 1fr;gap:12px;position:relative}
+.b-step-spine{position:absolute;left:13px;top:28px;width:2px;bottom:-2px;background:linear-gradient(to bottom,rgba(245,197,24,.2),rgba(245,197,24,.03));transform-origin:top;transform:scaleY(0);animation:spineGrow .5s cubic-bezier(.4,0,.2,1) forwards}
+.b-step:nth-child(1) .b-step-spine{animation-delay:.1s}
+.b-step:nth-child(2) .b-step-spine{animation-delay:.25s}
+.b-step:nth-child(3) .b-step-spine{animation-delay:.4s}
+@keyframes spineGrow{to{transform:scaleY(1)}}
+.b-step-node{width:24px;height:24px;border-radius:50%;border:1px solid rgba(245,197,24,.2);background:#000;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;transition:border-color .3s,background .3s,box-shadow .3s}
+.b-step:hover .b-step-node{border-color:var(--gold);background:rgba(245,197,24,.08);box-shadow:0 0 12px rgba(245,197,24,.2)}
+.b-step-num{font-family:var(--f-display);font-size:9px;letter-spacing:.06em;color:rgba(245,197,24,.4);line-height:1;transition:color .3s}
+.b-step:hover .b-step-num{color:var(--gold)}
+.b-step-body{padding-bottom:0}
+.b-step-title{font-family:var(--f-cond);font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;margin-bottom:3px;line-height:1.2;transition:color .28s}
+.b-step:hover .b-step-title{color:var(--gold)}
+.b-step-text{font-size:11px;font-weight:300;color:var(--muted);line-height:1.5}
+.b-step-tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.b-step-tag{font-family:var(--f-cond);font-size:7px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.22);transition:background .2s,border-color .2s,color .2s}
+.b-step-tag.gold{background:rgba(245,197,24,.06);border-color:rgba(245,197,24,.16);color:rgba(245,197,24,.55)}
+.b-step:hover .b-step-tag.gold{background:rgba(245,197,24,.1);border-color:rgba(245,197,24,.28);color:rgba(245,197,24,.8)}
+.b-stat{padding:28px 30px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;background:rgba(245,197,24,.02)}
+.b-stat-icon{width:38px;height:38px;border-radius:9px;background:rgba(245,197,24,.06);border:1px solid rgba(245,197,24,.12);display:flex;align-items:center;justify-content:center;transition:background .3s,border-color .3s,transform .3s;margin-bottom:4px}
+.b-card:hover .b-stat-icon{background:rgba(245,197,24,.12);border-color:rgba(245,197,24,.28);transform:scale(1.08) rotate(-3deg)}
+.b-stat-icon svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.4;transition:transform .3s}
+.b-card:hover .b-stat-icon svg{transform:scale(1.1)}
+.b-stat-val{font-family:var(--f-display);font-size:44px;letter-spacing:.03em;color:var(--gold);line-height:1;transition:letter-spacing .3s}
+.b-card:hover .b-stat-val{letter-spacing:.06em}
+.b-stat-label{font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:4px}
+.b-stat-sub{font-size:12px;font-weight:300;color:var(--muted);line-height:1.5}
+.b-stat-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-cond);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,197,24,.6);background:rgba(245,197,24,.06);border:1px solid rgba(245,197,24,.13);padding:4px 10px;border-radius:20px;align-self:flex-start;margin-top:4px;transition:background .28s,border-color .28s,color .28s}
+.b-card:hover .b-stat-pill{background:rgba(245,197,24,.1);border-color:rgba(245,197,24,.24);color:var(--gold)}
+.pill-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;animation:pillBlink 1.8s ease-in-out infinite}
+@keyframes pillBlink{0%,100%{opacity:1}50%{opacity:.25}}
 /* FIX: top gold stroke only on membership card */
-.mem-card{
-  border-radius:20px;overflow:hidden;
-  background:linear-gradient(140deg,#0f0d02 0%,#13100a 60%,#0a0900 100%);
-  position:relative;
-  border:1px solid rgba(255,255,255,.04);
-}
-.mem-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  z-index:3;border-radius:20px 20px 0 0;
-}
-.mem-card-header{padding:36px 40px;border-bottom:1px solid rgba(245,197,24,.08);display:flex;align-items:flex-start;justify-content:space-between;position:relative}
-.mem-card-header::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(245,197,24,.04) 0%,transparent 60%);pointer-events:none}
-.mem-badge-label{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:var(--bg);font-family:var(--f-cond);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px}
-.mem-plan-name{font-family:var(--f-display);font-size:42px;letter-spacing:.04em;color:var(--white)}
-.mem-plan-tagline{font-size:12px;font-weight:300;color:var(--muted);margin-top:4px;max-width:300px;line-height:1.6}
-.mem-price-box{text-align:right;position:relative;z-index:1}
-.mem-size-tabs{display:flex;gap:6px;justify-content:flex-end;margin-bottom:10px}
-.mem-size-tab{font-family:var(--f-cond);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--muted);padding:5px 12px;border-radius:3px;cursor:none;transition:background .2s,color .2s,border-color .2s}
-.mem-size-tab.active,.mem-size-tab:hover{background:rgba(245,197,24,.12);border-color:rgba(245,197,24,.3);color:var(--gold)}
-.mem-price-current{font-family:var(--f-display);font-size:52px;letter-spacing:.02em;color:var(--gold);line-height:1;display:flex;align-items:flex-start;gap:3px}
-.mem-price-peso{font-size:28px;margin-top:6px}
-.mem-price-period{font-family:var(--f-cond);font-size:11px;font-weight:600;letter-spacing:.14em;color:rgba(245,197,24,.4);text-transform:uppercase;margin-top:4px}
-.mem-card-body{padding:36px 40px}
-.mem-benefits{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px}
-.mem-benefit{display:flex;align-items:flex-start;gap:10px}
-.mem-benefit-check{width:20px;height:20px;border-radius:50%;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.mem-benefit-check svg{width:10px;height:10px;stroke:var(--gold)}
-.mem-benefit-text{font-size:13px;color:rgba(255,255,255,.6);line-height:1.5}
-.mem-benefit-text strong{color:var(--white);font-weight:600}
-.mem-cta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}
-.btn-mem-join{font-family:var(--f-cond);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:14px 36px;border-radius:4px;text-decoration:none;cursor:none;display:inline-flex;align-items:center;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
-.btn-mem-join::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-.btn-mem-join:hover::before{transform:scaleX(1)}
-.btn-mem-join:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(245,197,24,.4)}
-.btn-mem-join span{position:relative;z-index:1}
-.mem-fine{font-size:11px;font-weight:300;color:#333;line-height:1.6}
-.mem-side{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.mem-side-card{border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:24px;background:rgba(255,255,255,.02);transition:border-color .25s,background .25s}
-.mem-side-card:hover{border-color:rgba(245,197,24,.15);background:rgba(245,197,24,.02)}
-.mem-side-icon{width:38px;height:38px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-.mem-side-icon svg{width:18px;height:18px;stroke:var(--gold)}
-.mem-side-title{font-family:var(--f-display);font-size:22px;letter-spacing:.04em;color:var(--white);margin-bottom:4px}
-.mem-side-text{font-size:12px;font-weight:300;color:#444;line-height:1.6}
 
 /* SERVICE AREA */
 #service-area{position:relative;z-index:10;background:#000000;padding:100px 60px;overflow:hidden}
@@ -640,21 +1137,145 @@ nav.scrolled{background:rgba(8,8,8,.98);box-shadow:0 1px 40px rgba(0,0,0,.6)}
 .area-hours-time{font-family:var(--f-cond);font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--gold)}
 
 footer#footer{position:relative;z-index:10;background:var(--bg);background:#000000;}
-.footer-cta{position:relative;text-align:center;padding:90px 60px 70px;overflow:hidden}
-.footer-cta-orb{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,197,24,.04) 0%,transparent 65%);border-radius:50%;pointer-events:none}
-.footer-cta-label{font-family:var(--f-cond);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:10px}
-.footer-cta-label::before,.footer-cta-label::after{content:'';width:22px;height:1px;background:var(--gold)}
-.footer-cta-headline{font-family:var(--f-display);font-size:clamp(52px,7vw,96px);line-height:.9;margin-bottom:20px}
-.footer-cta-headline .gold{color:var(--gold)}
-.footer-cta-text{font-size:14px;font-weight:300;color:var(--muted);max-width:480px;margin:0 auto 36px;line-height:1.7}
-.footer-cta-btns{display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap}
-.btn-footer-primary{font-family:var(--f-cond);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:14px 32px;border-radius:3px;border:none;cursor:none;display:inline-flex;align-items:center;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
-.btn-footer-primary::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:scaleX(0);transform-origin:left;transition:transform .3s}
-.btn-footer-primary:hover::before{transform:scaleX(1)}
-.btn-footer-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(245,197,24,.35)}
-.btn-footer-primary span{position:relative;z-index:1}
-.btn-footer-sec{font-family:var(--f-cond);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--white);border:1px solid var(--dim);background:transparent;padding:14px 32px;border-radius:3px;text-decoration:none;cursor:none;transition:border-color .2s,color .2s,transform .2s}
-.btn-footer-sec:hover{border-color:rgba(245,197,24,.4);color:var(--gold);transform:translateY(-2px)}
+/* ── NEW CTA SECTION ── */
+.cta-section{
+  position:relative;width:100%;min-height:300px;
+  background:#000000;border-top:1px solid rgba(245,197,24,0.12);
+  display:grid;grid-template-columns:1fr 320px 1fr;
+  align-items:stretch;overflow:hidden;
+  padding:56px 64px;gap:0;
+}
+.cta-panel-left{
+  position:relative;z-index:10;
+  padding-right:48px;
+  text-align:left;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  height:100%;align-self:stretch;
+}
+.cta-ready-tag{
+  font-family:var(--f-cond);
+  font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:16px;
+}
+.cta-ready-tag::before,.cta-ready-tag::after{content:'';width:24px;height:1px;background:rgba(245,197,24,.4);flex-shrink:0}
+.cta-big-headline{font-family:var(--f-display);line-height:.88;letter-spacing:.02em;margin-bottom:20px;}
+.cta-hl-white{display:block;font-size:68px;color:#fff;overflow:hidden}
+.cta-hl-gold{display:block;font-size:68px;color:var(--gold);overflow:hidden}
+.cta-hl-word{display:inline-block;animation:ctaWordReveal .65s cubic-bezier(.22,.68,0,1.2) both}
+.cta-hl-word:nth-child(1){animation-delay:.06s}
+.cta-hl-word:nth-child(2){animation-delay:.18s}
+@keyframes ctaWordReveal{from{transform:translateY(105%);opacity:0}to{transform:translateY(0);opacity:1}}
+.cta-left-sub{font-size:13px;font-weight:300;color:#484848;line-height:1.7;max-width:320px;margin-bottom:28px;}
+.cta-left-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-start;}
+.cta-btn-primary{
+  font-family:var(--f-cond);font-size:12px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;
+  background:var(--gold);color:#000;border:none;padding:14px 28px;border-radius:2px;
+  cursor:none;display:inline-flex;align-items:center;position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.cta-btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0) 40%,rgba(255,255,255,0.18) 100%);opacity:0;transition:opacity .2s}
+.cta-btn-primary:hover::before{opacity:1}
+.cta-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(245,197,24,.45)}
+.cta-btn-sec{
+  font-family:var(--f-cond);font-size:12px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;
+  background:transparent;color:#bbb;border:1px solid rgba(255,255,255,0.14);
+  padding:14px 28px;border-radius:2px;cursor:none;
+  transition:border-color .2s,color .2s,transform .2s,background .2s;
+}
+.cta-btn-sec:hover{border-color:rgba(245,197,24,.45);color:var(--gold);transform:translateY(-2px);background:rgba(245,197,24,0.04)}
+/* orbital center */
+.cta-panel-center{position:relative;z-index:10;display:flex;align-items:center;justify-content:center;height:280px;align-self:center;}
+.cta-orb-glow{position:absolute;top:50%;left:50%;width:230px;height:230px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(245,197,24,0.09) 0%,transparent 70%);animation:ctaGlowPulse 2.8s ease-in-out infinite;pointer-events:none;}
+@keyframes ctaGlowPulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}}
+.cta-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:none;animation:ctaSpinRing linear infinite;}
+.cta-ring-1{width:270px;height:145px;box-shadow:0 0 0 1px rgba(245,197,24,0.07),inset 0 0 0 1px rgba(245,197,24,0.04);animation-duration:18s;}
+.cta-ring-2{width:198px;height:106px;box-shadow:0 0 0 1px rgba(245,197,24,0.12),inset 0 0 0 1px rgba(245,197,24,0.06);animation-duration:11s;animation-direction:reverse;}
+.cta-ring-3{width:130px;height:70px;box-shadow:0 0 0 1px rgba(245,197,24,0.2),inset 0 0 0 1px rgba(245,197,24,0.1);animation-duration:7s;}
+.cta-ring-4{width:60px;height:32px;box-shadow:0 0 0 1px rgba(245,197,24,0.38);animation-duration:4s;animation-direction:reverse;}
+@keyframes ctaSpinRing{from{transform:translate(-50%,-50%) rotateX(68deg) rotate(0deg)}to{transform:translate(-50%,-50%) rotateX(68deg) rotate(360deg)}}
+.cta-orbit-dot{position:absolute;top:50%;left:50%;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(245,197,24,.8),0 0 16px rgba(245,197,24,.4);}
+.cta-od1{width:5px;height:5px;animation:ctaDotOrbit2 11s linear infinite;}
+.cta-od2{width:3px;height:3px;animation:ctaDotOrbit 18s linear -5s infinite reverse;}
+.cta-od3{width:4px;height:4px;animation:ctaDotOrbit3 7s linear -2s infinite;}
+@keyframes ctaDotOrbit{from{transform:translate(-50%,-50%) rotateX(68deg) rotate(0deg) translateX(99px) rotateX(-68deg)}to{transform:translate(-50%,-50%) rotateX(68deg) rotate(360deg) translateX(99px) rotateX(-68deg)}}
+@keyframes ctaDotOrbit2{from{transform:translate(-50%,-50%) rotateX(68deg) rotate(0deg) translateX(65px) rotateX(-68deg)}to{transform:translate(-50%,-50%) rotateX(68deg) rotate(360deg) translateX(65px) rotateX(-68deg)}}
+@keyframes ctaDotOrbit3{from{transform:translate(-50%,-50%) rotateX(68deg) rotate(0deg) translateX(135px) rotateX(-68deg)}to{transform:translate(-50%,-50%) rotateX(68deg) rotate(360deg) translateX(135px) rotateX(-68deg)}}
+.cta-center-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;animation:ctaBoltBeat 1.4s ease-in-out infinite;}
+@keyframes ctaBoltBeat{0%,100%{filter:drop-shadow(0 0 6px rgba(245,197,24,.7)) drop-shadow(0 0 18px rgba(245,197,24,.3));transform:translate(-50%,-50%) scale(1)}50%{filter:drop-shadow(0 0 20px rgba(245,197,24,1)) drop-shadow(0 0 40px rgba(245,197,24,.6)) drop-shadow(0 0 80px rgba(245,197,24,.2));transform:translate(-50%,-50%) scale(1.14)}}
+.cta-spark{position:absolute;top:50%;left:50%;width:2px;height:2px;border-radius:50%;background:var(--gold);animation:ctaSparkFly linear infinite;opacity:0;}
+@keyframes ctaSparkFly{0%{opacity:0;transform:translate(-50%,-50%) translate(0,0)}12%{opacity:.9}100%{opacity:0;transform:translate(-50%,-50%) translate(var(--sx),var(--sy))}}
+/* right panel */
+.cta-panel-right{
+  position:relative;z-index:10;padding-left:48px;text-align:right;
+  display:flex;flex-direction:column;justify-content:space-between;
+  align-items:flex-end;align-self:stretch;
+}
+.cta-careers-tag{
+  font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:16px;
+}
+.cta-tag-line{width:24px;height:1px;background:var(--gold);opacity:.5;flex-shrink:0}
+.cta-careers-headline{font-family:var(--f-display);font-size:56px;line-height:.88;letter-spacing:.02em;color:#fff;margin-bottom:16px;}
+.cta-careers-headline .ch-line{display:block;overflow:hidden}
+.cta-careers-headline .ch-word{display:inline-block;animation:ctaWordReveal .65s cubic-bezier(.22,.68,0,1.2) both}
+.cta-careers-headline .ch-word:nth-child(1){animation-delay:.1s}
+.cta-careers-headline .ch-word:nth-child(2){animation-delay:.2s}
+.cta-careers-headline .ch-word:nth-child(3){animation-delay:.3s}
+.cta-ch-accent{color:var(--gold)}
+.cta-careers-sub{font-size:13px;font-weight:300;color:#484848;line-height:1.7;max-width:300px;margin-bottom:22px;margin-left:auto;}
+.cta-btn-apply{
+  font-family:var(--f-cond);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  background:var(--gold);color:#000;border:none;padding:14px 32px;border-radius:2px;
+  cursor:none;display:inline-flex;align-items:center;gap:10px;
+  position:relative;overflow:hidden;z-index:20;
+  transition:transform .2s,box-shadow .2s;margin-left:auto;
+}
+.cta-btn-apply::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0) 40%,rgba(255,255,255,0.18) 100%);opacity:0;transition:opacity .2s}
+.cta-btn-apply:hover::before{opacity:1}
+.cta-btn-apply:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(245,197,24,.45)}
+.cta-apply-pulse{width:7px;height:7px;border-radius:50%;background:#000;flex-shrink:0;animation:ctaApplyPulse 1.4s ease-in-out infinite;}
+@keyframes ctaApplyPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,0,0,.4)}50%{box-shadow:0 0 0 4px rgba(0,0,0,0)}}
+/* careers modal */
+.careers-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.careers-modal-overlay.open{opacity:1;pointer-events:all}
+.careers-modal{background:#0f0f0f;border:1px solid rgba(245,197,24,.18);border-radius:4px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;padding:40px 36px;position:relative;transform:translateY(24px) scale(.96);transition:transform .35s cubic-bezier(.22,.68,0,1.2);scrollbar-width:none;}
+.careers-modal::-webkit-scrollbar{display:none}
+.careers-modal-overlay.open .careers-modal{transform:translateY(0) scale(1)}
+.careers-modal-close{position:absolute;top:16px;right:18px;background:transparent;border:none;color:#3a3a3a;font-size:20px;cursor:pointer;line-height:1;transition:color .2s;font-family:var(--f-body);}
+.careers-modal-close:hover{color:var(--gold)}
+.careers-modal-eyebrow{font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.careers-pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;animation:cpdot 1.5s ease-in-out infinite;flex-shrink:0}
+@keyframes cpdot{0%,100%{box-shadow:0 0 0 0 rgba(245,197,24,.55)}50%{box-shadow:0 0 0 5px rgba(245,197,24,0)}}
+.careers-modal-h{font-family:var(--f-display);font-size:40px;letter-spacing:.04em;color:#fff;line-height:1;margin-bottom:6px}
+.careers-modal-sub{font-size:12px;font-weight:300;color:#555;line-height:1.65;margin-bottom:26px}
+.careers-perks-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:26px}
+.careers-perk{background:#161616;border:1px solid #1e1e1e;border-radius:3px;padding:10px 12px;display:flex;align-items:flex-start;gap:9px}
+.careers-perk-icon{color:var(--gold);width:16px;height:16px;margin-top:1px;flex-shrink:0;line-height:1}
+.careers-perk-icon svg{width:16px;height:16px;display:block}
+.careers-perk-title{font-family:var(--f-cond);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#ccc;margin-bottom:1px}
+.careers-perk-desc{font-size:11px;color:#444;line-height:1.4}
+.careers-modal-divider{border:none;border-top:1px solid #1c1c1c;margin:0 0 24px}
+.careers-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.careers-form-row.full{grid-template-columns:1fr}
+.careers-field{display:flex;flex-direction:column;gap:4px}
+.careers-field label{font-family:var(--f-cond);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#444}
+.careers-field input,.careers-field select,.careers-field textarea{background:#0a0a0a;border:1px solid #1e1e1e;border-radius:2px;color:#ddd;font-family:var(--f-body);font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s;width:100%;}
+.careers-field input:focus,.careers-field select:focus,.careers-field textarea:focus{border-color:rgba(245,197,24,.4)}
+.careers-field input::placeholder,.careers-field textarea::placeholder{color:#2a2a2a}
+.careers-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23444' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.careers-field select option{background:#111}
+.careers-field textarea{resize:none;height:76px;line-height:1.5}
+.careers-form-check{display:flex;align-items:flex-start;gap:9px;margin:14px 0 22px}
+.careers-form-check input[type=checkbox]{width:14px;height:14px;accent-color:var(--gold);margin-top:2px;flex-shrink:0}
+.careers-form-check label{font-size:11px;color:#444;line-height:1.55}
+.careers-btn-submit{width:100%;font-family:var(--f-cond);font-size:13px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;background:var(--gold);color:#000;border:none;padding:15px;border-radius:2px;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.careers-btn-submit:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,197,24,.38)}
+.careers-success-msg{display:none;text-align:center;padding:28px 0}
+.careers-success-msg.show{display:block}
+.careers-success-bolt{margin-bottom:14px;display:flex;justify-content:center;align-items:center;}
+.careers-success-h{font-family:var(--f-display);font-size:34px;color:var(--gold);letter-spacing:.04em;margin-bottom:8px}
+.careers-success-p{font-size:13px;color:#555;line-height:1.65}
 .footer-bottom{padding:28px 60px;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;justify-content:space-between;gap:20px;background:#000000;}
 .footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
 .footer-tagline{font-size:12px;font-weight:300;color:var(--muted);max-width:300px;line-height:1.5;margin-top:8px}
@@ -1005,7 +1626,7 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
       <div class="trust-row">
         <div class="trust-item">
           <div class="trust-icon"><svg viewBox="0 0 14 14" fill="var(--gold)"><path d="M7 1l1.5 3.1 3.4.5-2.5 2.4.6 3.4L7 8.8 3.9 10.4l.6-3.4L2 4.6l3.4-.5z"/></svg></div>
-          <div><div class="trust-val">Arayat, Pampanga &amp; nearby</div></div>
+          <div><div class="trust-val">Trained & Certified Professionals</div></div>
         </div>
         <div class="trust-item">
           <div class="trust-icon"><svg viewBox="0 0 14 14" fill="none" stroke="var(--gold)" stroke-width="1.3"><circle cx="7" cy="6" r="4"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke-linecap="round"/></svg></div>
@@ -1373,99 +1994,328 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
   <div class="cflow-price-label">↑ TAP CARD TO SEE PRICES</div>
 </section>
 
-<!-- PRICING — no section divider, fixed layout spacing -->
+<!-- PRICING — Compact Accordion + Live Panel -->
 <section id="pricing">
-  <div class="pricing-bg-text">PRICING</div>
+  <div class="pricing-bg-text">RATES</div>
   <div class="pricing-inner">
+
+    <!-- Header -->
     <div class="pricing-header reveal">
       <div class="pricing-left-head">
         <div class="pricing-eyebrow">Honest Pricing</div>
         <h2 class="pricing-h2">TRANSPARENT.<br><em>FAIR. HONEST.</em></h2>
-        <p class="pricing-sub">No hidden fees. No surprises. Just premium service at prices that make sense.</p>
+        <p class="pricing-sub">No hidden fees. No surprises. Click any service to see your price.</p>
       </div>
+
     </div>
-    <div class="pricing-controls reveal reveal-d1">
-      <div class="pricing-cats">
-        <button class="pricing-cat active" data-pcat="all">All Services</button>
+
+    <!-- Filter pills — full width above both columns -->
+    <div class="pricing-cats-row">
+      <div class="pricing-cats-pills" id="priceCatsPills">
+        <div class="cats-track" id="catsTrack"></div>
+        <button class="pricing-cat active" data-pcat="all">All</button>
         <button class="pricing-cat" data-pcat="wash">Wash</button>
         <button class="pricing-cat" data-pcat="detail">Detailing</button>
         <button class="pricing-cat" data-pcat="coating">Coating</button>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="size-selector">
-          <button class="size-btn" data-size="Small">Small</button>
-          <button class="size-btn active" data-size="Medium">Medium</button>
-          <button class="size-btn" data-size="Large">Large</button>
-          <button class="size-btn" data-size="XL">XL</button>
+      <div class="cats-divider"></div>
+      <div class="size-selector" id="priceSizeSelector">
+        <div class="size-track" id="priceSizeTrack"></div>
+        <button class="size-btn" data-size="Small" data-hint="City Car / Hatchback">Small</button>
+        <button class="size-btn active" data-size="Medium" data-hint="Sedan / Small SUV / MPV">Medium</button>
+        <button class="size-btn" data-size="Large" data-hint="Full-size SUV / Van">Large</button>
+        <button class="size-btn" data-size="XL" data-hint="Truck / Fullsize Van / Oversize">XL</button>
+      </div>
+      <div class="size-hint" id="sizeHint">Sedan / Small SUV / MPV</div>
+    </div>
+
+    <!-- Two-col layout: accordion + sticky panel -->
+    <div class="pricing-layout reveal reveal-d1">
+
+      <!-- LEFT: Accordion -->
+      <div class="pricing-accordion">
+
+        <!-- WASH GROUP -->
+        <div class="acc-group" data-cat="wash" id="accWash">
+          <div class="acc-head" onclick="toggleAccordion('accWash')">
+            <div class="acc-head-left">
+              <div class="acc-head-icon">
+                <svg viewBox="0 0 14 14"><path d="M2 10C2 7 5 3 7 2C9 3 12 7 12 10a5 5 0 01-10 0z" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7v3" stroke-linecap="round"/></svg>
+              </div>
+              <span class="acc-cat-name">Wash</span>
+              <span class="acc-count-badge">2 services</span>
+            </div>
+            <div class="acc-head-right">
+              <span class="acc-range">₱299+</span>
+              <div class="acc-chevron"><svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></div>
+            </div>
+          </div>
+          <div class="acc-body">
+            <div class="acc-svc-row" data-cat="wash"
+              data-name="Basic Wash"
+              data-desc="Exterior clean — removes dirt, dust & surface grime"
+              data-prices='{"Small":299,"Medium":349,"Large":399,"XL":449}'
+              data-travel="true"
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Basic Wash</div>
+                <div class="acc-svc-desc">Exterior clean · removes dirt, dust &amp; surface grime</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">349</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()">
+                  <svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="wash"
+              data-name="Basic Glow"
+              data-desc="Wash + protectant wax — added shine and paint protection"
+              data-prices='{"Small":449,"Medium":549,"Large":649,"XL":749}'
+              data-travel="true"
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Basic Glow</div>
+                <div class="acc-svc-desc">Wash + protectant wax · added shine &amp; paint protection</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">549</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()">
+                  <svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="size-hint" id="sizeHint">Compact Sedan / Small SUV / MPV</div>
+
+        <!-- DETAILING GROUP -->
+        <div class="acc-group" data-cat="detail" id="accDetail">
+          <div class="acc-head" onclick="toggleAccordion('accDetail')">
+            <div class="acc-head-left">
+              <div class="acc-head-icon">
+                <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2" stroke-linecap="round"/></svg>
+              </div>
+              <span class="acc-cat-name">Detailing</span>
+              <span class="acc-count-badge">6 services</span>
+            </div>
+            <div class="acc-head-right">
+              <span class="acc-range">₱500+</span>
+              <div class="acc-chevron"><svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></div>
+            </div>
+          </div>
+          <div class="acc-body">
+            <div class="acc-svc-row" data-cat="detail"
+              data-name="Interior Detailing"
+              data-desc="Leather treatment, deep vacuum, odor elimination"
+              data-prices='{"Small":2000,"Medium":2500,"Large":3000,"XL":3500}'
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Interior Detailing</div>
+                <div class="acc-svc-desc">Leather treatment, deep vacuum, odor elimination</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">2,500</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="detail"
+              data-name="Exterior Detailing"
+              data-desc="Clay bar, polish, paint decontamination"
+              data-prices='{"Small":4000,"Medium":6000,"Large":7000,"XL":8000}'
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Exterior Detailing</div>
+                <div class="acc-svc-desc">Clay bar, polish, paint decontamination</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">6,000</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="detail"
+              data-name="Glass Detailing"
+              data-desc="Crystal clear + water repellent treatment"
+              data-prices='{"Small":1500,"Medium":2000,"Large":2500,"XL":3000}'
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Glass Detailing</div>
+                <div class="acc-svc-desc">Crystal clear + water repellent treatment</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">2,000</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="detail"
+              data-name="Dry Engine Detailing"
+              data-desc="Engine bay degreasing and thorough cleaning"
+              data-prices='{"Small":1500,"Medium":2000,"Large":2500,"XL":3000}'
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Dry Engine Detailing</div>
+                <div class="acc-svc-desc">Engine bay degreasing and thorough cleaning</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">2,000</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="detail"
+              data-name="Tire Detailing"
+              data-desc="Tire shine, rim clean, rubber conditioning"
+              data-prices='{"Small":500,"Medium":500,"Large":500,"XL":500}'
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Tire Detailing</div>
+                <div class="acc-svc-desc">Tire shine, rim clean, rubber conditioning</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">500</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="detail"
+              data-name="Car Care Deluxe"
+              data-desc="Full-package — exterior wash, acid rain removal, decontamination, tire detailing & wax"
+              data-prices='{"Small":2000,"Medium":2500,"Large":3500,"XL":4500}'
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Car Care Deluxe</div>
+                <div class="acc-svc-desc">Full-package · wash, decontamination, tire &amp; wax</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-price"><span class="acc-peso">₱</span><span class="acc-amt">2,500</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COATING GROUP -->
+        <div class="acc-group" data-cat="coating" id="accCoating">
+          <div class="acc-head" onclick="toggleAccordion('accCoating')">
+            <div class="acc-head-left">
+              <div class="acc-head-icon">
+                <svg viewBox="0 0 14 14"><path d="M3 11L7 3L11 11" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 8.5h5" stroke-linecap="round"/></svg>
+              </div>
+              <span class="acc-cat-name">Coating</span>
+              <span class="acc-count-badge">2 services</span>
+            </div>
+            <div class="acc-head-right">
+              <span class="acc-range">₱14,000+</span>
+              <div class="acc-chevron"><svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></div>
+            </div>
+          </div>
+          <div class="acc-body">
+            <div class="acc-svc-row" data-cat="coating"
+              data-name="Ceramic Coating"
+              data-desc="Professional nano-ceramic · 3–5 year durability"
+              data-prices='{"Small":14000,"Medium":14000,"Large":14000,"XL":14000}'
+              data-oldprice="₱16,667"
+              data-popular="true"
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-popular-tag">Most Popular</div>
+                <div class="acc-svc-name">Ceramic Coating</div>
+                <div class="acc-svc-desc">Professional nano-ceramic · 3–5 year durability</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-old">₱16,667</div>
+                  <div class="acc-price is-gold"><span class="acc-peso">₱</span><span class="acc-amt">14,000</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+            <div class="acc-svc-row" data-cat="coating"
+              data-name="Graphene Coating"
+              data-desc="Next-level graphene · Superior heat dissipation"
+              data-prices='{"Small":16000,"Medium":16000,"Large":16000,"XL":16000}'
+              data-oldprice="₱20,000"
+              onclick="selectService(this)">
+              <div class="acc-svc-info">
+                <div class="acc-svc-name">Graphene Coating</div>
+                <div class="acc-svc-desc">Next-level graphene · Superior heat dissipation</div>
+              </div>
+              <div class="acc-svc-right">
+                <div class="acc-price-col">
+                  <div class="acc-old">₱20,000</div>
+                  <div class="acc-price is-gold"><span class="acc-peso">₱</span><span class="acc-amt">16,000</span></div>
+                </div>
+                <button class="acc-book-dot" onclick="event.stopPropagation();openBookingModal()"><svg viewBox="0 0 10 10"><path d="M2 5H8M6 3L8 5L6 7"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /pricing-accordion -->
+
+      <!-- RIGHT: Sticky live price panel -->
+      <div class="pricing-panel" id="pricingPanel">
+        <div class="panel-topbar"></div>
+        <div class="panel-body">
+
+          <!-- Idle (no selection) -->
+          <div class="panel-idle" id="panelIdle">
+            <div class="panel-idle-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2L8 8H3L7 12L5 18L12 14L19 18L17 12L21 8H16L12 2Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="panel-idle-text">Select a service</div>
+            <div class="panel-idle-sub">Tap any service row to see pricing for your vehicle size</div>
+          </div>
+
+          <!-- Active panel -->
+          <div class="panel-active" id="panelActive">
+            <div class="panel-svc-tag" id="panelTag">Wash</div>
+            <div class="panel-svc-title" id="panelTitle">Basic Wash</div>
+            <div class="panel-svc-desc" id="panelDesc">Exterior clean — removes dirt, dust &amp; surface grime</div>
+
+            <div class="panel-price-block">
+              <div class="panel-price-label">Price for your size</div>
+              <div class="panel-price-row">
+                <span class="panel-peso">₱</span>
+                <div class="panel-price-num" id="panelPrice">349</div>
+              </div>
+              <div class="panel-old-price" id="panelOld" style="display:none"></div>
+              <div class="panel-travel-note" id="panelTravel" style="display:none">+ travel fee applies to wash services</div>
+            </div>
+
+            <div class="panel-size-label">Vehicle Size</div>
+            <div class="panel-size-grid">
+              <button class="psz" data-sz="Small" onclick="changePanelSize('Small',this)">Small<span class="psz-sub">Hatchback</span></button>
+              <button class="psz active" data-sz="Medium" onclick="changePanelSize('Medium',this)">Medium<span class="psz-sub">Sedan/SUV</span></button>
+              <button class="psz" data-sz="Large" onclick="changePanelSize('Large',this)">Large<span class="psz-sub">Full SUV</span></button>
+              <button class="psz" data-sz="XL" onclick="changePanelSize('XL',this)">XL<span class="psz-sub">Truck/Van</span></button>
+            </div>
+
+            <button class="panel-cta" onclick="openBookingModal()">
+              <span>Book This Service</span>
+              <svg viewBox="0 0 12 12"><path d="M2 6H10M7 3L10 6L7 9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="panel-disclaimer">No hidden fees · Price final at booking</div>
+          </div>
+
+        </div>
       </div>
-    </div>
-    <div class="pt-header-row reveal reveal-d1">
-      <span style="color:#2a2a2a">Service</span>
-      <span class="h-price">Starting Price</span>
-      <span class="h-book">Book</span>
-    </div>
-    <div class="pt-group reveal reveal-d2" data-ptcat-group="wash">
-      <div class="pt-cat-head"><span class="pt-cat-label">Wash Services</span></div>
-      <div class="pt-row" data-pcat="wash">
-        <div><div class="pt-svc-tag">Wash</div><div class="pt-svc-name">Basic Wash</div><div class="pt-svc-desc">Exterior clean — removes dirt, dust &amp; surface grime</div></div>
-        <div class="pt-price-col"><div class="pt-travel">+ travel fee</div><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":299,"Medium":349,"Large":399,"XL":449}'>349</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="wash">
-        <div><div class="pt-svc-tag">Wash</div><div class="pt-svc-name">Basic Glow</div><div class="pt-svc-desc">Wash + protectant wax — added shine and paint protection</div></div>
-        <div class="pt-price-col"><div class="pt-travel">+ travel fee</div><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":449,"Medium":549,"Large":649,"XL":749}'>549</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-    </div>
-    <div class="pt-group reveal reveal-d2" data-ptcat-group="detail">
-      <div class="pt-cat-head"><span class="pt-cat-label">Detailing Services</span></div>
-      <div class="pt-row" data-pcat="detail">
-        <div><div class="pt-svc-tag">Detail</div><div class="pt-svc-name">Interior Detailing</div><div class="pt-svc-desc">Leather treatment, deep vacuum, odor elimination</div></div>
-        <div class="pt-price-col"><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":2000,"Medium":2500,"Large":3000,"XL":3500}'>2,500</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="detail">
-        <div><div class="pt-svc-tag">Detail</div><div class="pt-svc-name">Exterior Detailing</div><div class="pt-svc-desc">Clay bar, polish, paint decontamination</div></div>
-        <div class="pt-price-col"><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":4000,"Medium":6000,"Large":7000,"XL":8000}'>6,000</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="detail">
-        <div><div class="pt-svc-tag">Detail</div><div class="pt-svc-name">Glass Detailing</div><div class="pt-svc-desc">Crystal clear + water repellent treatment</div></div>
-        <div class="pt-price-col"><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":1500,"Medium":2000,"Large":2500,"XL":3000}'>2,000</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="detail">
-        <div><div class="pt-svc-tag">Detail</div><div class="pt-svc-name">Dry Engine Detailing</div><div class="pt-svc-desc">Engine bay degreasing and thorough cleaning</div></div>
-        <div class="pt-price-col"><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":1500,"Medium":2000,"Large":2500,"XL":3000}'>2,000</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="detail">
-        <div><div class="pt-svc-tag">Detail</div><div class="pt-svc-name">Tire Detailing</div><div class="pt-svc-desc">Tire shine, rim clean, rubber conditioning</div></div>
-        <div class="pt-price-col"><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":500,"Medium":500,"Large":500,"XL":500}'>500</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="detail">
-        <div><div class="pt-svc-tag">Detail</div><div class="pt-svc-name">Car Care Deluxe</div><div class="pt-svc-desc">Full-package — exterior wash, acid rain removal, decontamination, tire detailing &amp; wax</div></div>
-        <div class="pt-price-col"><div class="pt-price"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":2000,"Medium":2500,"Large":3500,"XL":4500}'>2,500</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-    </div>
-    <div class="pt-group reveal reveal-d3" data-ptcat-group="coating">
-      <div class="pt-cat-head"><span class="pt-cat-label">Coating Services</span></div>
-      <div class="pt-row" data-pcat="coating">
-        <div><div class="pt-popular">★ Most Popular</div><div class="pt-svc-tag">Coating</div><div class="pt-svc-name">Ceramic Coating</div><div class="pt-svc-desc">Professional nano-ceramic · 3–5 year durability</div></div>
-        <div class="pt-price-col"><div class="pt-old-price">₱16,667</div><div class="pt-price gold"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":14000,"Medium":14000,"Large":14000,"XL":14000}'>14,000</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-      <div class="pt-row" data-pcat="coating">
-        <div><div class="pt-svc-tag">Coating</div><div class="pt-svc-name">Graphene Coating</div><div class="pt-svc-desc">Next-level graphene · Superior heat dissipation</div></div>
-        <div class="pt-price-col"><div class="pt-old-price">₱20,000</div><div class="pt-price gold"><span class="peso">₱</span><span class="p-amt" data-prices='{"Small":16000,"Medium":16000,"Large":16000,"XL":16000}'>16,000</span></div></div>
-        <div><button class="pt-book-btn" onclick="openBookingModal()"><span>Book</span><span>→</span></button></div>
-      </div>
-    </div>
-  </div>
+
+    </div><!-- /pricing-layout -->
+  </div><!-- /pricing-inner -->
 </section>
 
 <!-- WHY TRUST US — from main_page_part_6 -->
@@ -1512,53 +2362,203 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
   </div>
 </section>
 
-<!-- MEMBERSHIP — pure black background, top-only gold stroke on card -->
+<!-- MEMBERSHIP — bento grid -->
 <section id="membership">
-  <div class="mem-bg-grid"></div>
-  <div class="mem-inner">
-    <div class="mem-label reveal">Exclusive Access</div>
-    <h2 class="mem-headline reveal reveal-d1">JOIN THE<br><span class="gold">INNER CIRCLE</span></h2>
-    <p class="mem-sub reveal reveal-d2">Monthly membership with priority scheduling, exclusive discounts, and dedicated support. Your car deserves consistent care.</p>
-    <div class="mem-card-wrap reveal reveal-d2">
-      <div class="mem-card">
-        <div class="mem-card-header">
-          <div>
-            <div class="mem-badge-label">★ Recommended</div>
-            <div class="mem-plan-name">Inner Circle</div>
-            <div class="mem-plan-tagline">Monthly maintenance plan. Priority access. Real savings. Built for obsessed car owners.</div>
-          </div>
-          <div class="mem-price-box">
-            <div class="mem-size-tabs">
-              <button class="mem-size-tab active" data-ms="Small">S</button>
-              <button class="mem-size-tab" data-ms="Medium">M</button>
-              <button class="mem-size-tab" data-ms="Large">L</button>
-              <button class="mem-size-tab" data-ms="XL">XL</button>
-            </div>
-            <div class="mem-price-current"><span class="mem-price-peso">₱</span><span id="memPriceVal">1,000</span></div>
-            <div class="mem-price-period">per month</div>
-          </div>
+
+  <!-- HEADER -->
+  <div class="mem-header reveal">
+    <div class="mem-eyebrow">Exclusive Access</div>
+    <h2 class="mem-h2">JOIN THE<br><span class="g">INNER CIRCLE</span></h2>
+    <p class="mem-desc">Monthly membership with priority scheduling, exclusive discounts, and dedicated support. Your car deserves consistent care.</p>
+  </div>
+
+  <!-- BENTO -->
+  <div class="bento-mem">
+
+    <!-- MAIN PLAN CARD -->
+    <div class="b-card b-main featured reveal reveal-d1">
+      <div class="b-main-top">
+        <div class="b-badge">
+          <svg viewBox="0 0 10 10"><path d="M5 1L6.2 3.8H9L6.8 5.6L7.6 8.5L5 6.9L2.4 8.5L3.2 5.6L1 3.8H3.8L5 1Z" fill="#000"/></svg>
+          Recommended
         </div>
-        <div class="mem-card-body">
-          <div class="mem-benefits">
-            <div class="mem-benefit"><div class="mem-benefit-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-benefit-text"><strong>2x Basic Wash Credits</strong><br>per month</div></div>
-            <div class="mem-benefit"><div class="mem-benefit-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-benefit-text"><strong>1x Basic Glow Credit</strong><br>per month</div></div>
-            <div class="mem-benefit"><div class="mem-benefit-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-benefit-text"><strong>Priority Booking</strong><br>skip the queue</div></div>
-            <div class="mem-benefit"><div class="mem-benefit-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-benefit-text"><strong>10% Off All Detailing</strong><br>every booking</div></div>
-            <div class="mem-benefit"><div class="mem-benefit-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-benefit-text"><strong>Free Interior Protectant</strong><br>on first month</div></div>
-            <div class="mem-benefit"><div class="mem-benefit-check"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-benefit-text"><strong>Dedicated Support</strong><br>direct line to our team</div></div>
+        <div class="b-plan-name">Inner Circle</div>
+        <div class="b-plan-tag">Monthly maintenance plan. Priority access. Real savings. Built for obsessed car owners.</div>
+        <div class="b-price-row">
+          <div class="b-size-tabs" id="bSizeTabs">
+            <div class="tab-slider" id="bTabSlider"></div>
+            <button class="b-size-tab active" data-price="1000">S</button>
+            <button class="b-size-tab" data-price="1200">M</button>
+            <button class="b-size-tab" data-price="1500">L</button>
+            <button class="b-size-tab" data-price="1750">XL</button>
           </div>
-          <div class="mem-cta-row">
-            <p class="mem-fine">No lock-in. Cancel anytime.<br>Travel fee may apply to wash services.</p>
-            <a href="#" class="btn-mem-join"><span>Get a Membership</span></a>
+          <div class="b-price">
+            <span class="b-price-peso">₱</span>
+            <span class="b-price-val" id="bPriceVal">1,000</span>
+            <span class="b-price-period">/mo</span>
           </div>
         </div>
       </div>
-      <div class="mem-side">
-        <div class="mem-side-card"><div class="mem-side-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2L11 7H16L12 10L14 15L9 12L4 15L6 10L2 7H7L9 2Z" stroke-width="1.5" stroke-linejoin="round"/></svg></div><div class="mem-side-title">Inner Circle</div><div class="mem-side-text">Members get first access to new services, seasonal promos, and exclusive rates before anyone else.</div></div>
-        <div class="mem-side-card"><div class="mem-side-icon"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke-width="1.5"/><path d="M9 6V9L11 11" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="mem-side-title">Skip the Line</div><div class="mem-side-text">Priority scheduling means your preferred slots are always available. No more waiting for weeks.</div></div>
-        <div class="mem-side-card"><div class="mem-side-icon"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2L14 6V12C14 14.5 11.5 16 9 17C6.5 16 4 14.5 4 12V6L9 2Z" stroke-width="1.5"/><path d="M6.5 9L8 10.5L11.5 7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mem-side-title">Always Protected</div><div class="mem-side-text">Regular maintenance keeps your paint, interior, and coating in peak condition year-round.</div></div>
+      <div class="b-main-body">
+        <div class="b-tags">
+          <span class="b-tag hi">2× Wash Credits</span>
+          <span class="b-tag hi">1× Basic Glow</span>
+          <span class="b-tag hi">Priority Booking</span>
+          <span class="b-tag">10% Off Detailing</span>
+          <span class="b-tag">Free Protectant</span>
+          <span class="b-tag">Dedicated Support</span>
+        </div>
+        <div class="b-benefits" id="bBenefitsGrid">
+          <div class="b-benefit">
+            <div class="b-check"><svg viewBox="0 0 10 10"><path d="M2 5L4 7L8 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="b-benefit-text"><strong>2x Basic Wash Credits</strong>per month</div>
+          </div>
+          <div class="b-benefit">
+            <div class="b-check"><svg viewBox="0 0 10 10"><path d="M2 5L4 7L8 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="b-benefit-text"><strong>1x Basic Glow Credit</strong>per month</div>
+          </div>
+          <div class="b-benefit">
+            <div class="b-check"><svg viewBox="0 0 10 10"><path d="M2 5L4 7L8 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="b-benefit-text"><strong>Priority Booking</strong>skip the queue</div>
+          </div>
+          <div class="b-benefit">
+            <div class="b-check"><svg viewBox="0 0 10 10"><path d="M2 5L4 7L8 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="b-benefit-text"><strong>10% Off All Detailing</strong>every booking</div>
+          </div>
+          <div class="b-benefit">
+            <div class="b-check"><svg viewBox="0 0 10 10"><path d="M2 5L4 7L8 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="b-benefit-text"><strong>Free Interior Protectant</strong>first month</div>
+          </div>
+          <div class="b-benefit">
+            <div class="b-check"><svg viewBox="0 0 10 10"><path d="M2 5L4 7L8 3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="b-benefit-text"><strong>Dedicated Support</strong>direct line to our team</div>
+          </div>
+        </div>
+        <div class="b-cta-row">
+          <p class="b-fine">No lock-in. Cancel anytime.<br>Travel fee may apply.</p>
+          <button class="btn-join" onclick="openBookingModal()">
+            <span>Get a Membership</span>
+            <svg viewBox="0 0 12 12"><path d="M2 6H10M7 3L10 6L7 9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- TIMELINE STEPS CARD -->
+    <div class="b-card b-steps reveal reveal-d2">
+      <div class="b-steps-label">How it works</div>
+      <div class="b-timeline">
+        <div class="b-step">
+          <div class="b-step-spine"></div>
+          <div class="b-step-node"><span class="b-step-num">01</span></div>
+          <div class="b-step-body">
+            <div class="b-step-title">Choose Your Size</div>
+            <div class="b-step-text">Pick S, M, L, or XL based on your vehicle. Pricing scales to your car.</div>
+            <div class="b-step-tags">
+              <span class="b-step-tag gold">Small</span>
+              <span class="b-step-tag gold">Medium</span>
+              <span class="b-step-tag gold">Large</span>
+              <span class="b-step-tag gold">XL</span>
+            </div>
+          </div>
+        </div>
+        <div class="b-step">
+          <div class="b-step-spine"></div>
+          <div class="b-step-node"><span class="b-step-num">02</span></div>
+          <div class="b-step-body">
+            <div class="b-step-title">Book Anytime</div>
+            <div class="b-step-text">Members get priority slots. Pick your preferred schedule — we come to you.</div>
+            <div class="b-step-tags">
+              <span class="b-step-tag gold">Priority Access</span>
+              <span class="b-step-tag">Mobile Service</span>
+            </div>
+          </div>
+        </div>
+        <div class="b-step">
+          <div class="b-step-spine"></div>
+          <div class="b-step-node"><span class="b-step-num">03</span></div>
+          <div class="b-step-body">
+            <div class="b-step-title">We Show Up</div>
+            <div class="b-step-text">Fully equipped team arrives at your location. No hassle, no waiting around.</div>
+            <div class="b-step-tags">
+              <span class="b-step-tag">Fully Equipped</span>
+              <span class="b-step-tag">Certified</span>
+            </div>
+          </div>
+        </div>
+        <div class="b-step">
+          <div class="b-step-node"><span class="b-step-num">04</span></div>
+          <div class="b-step-body">
+            <div class="b-step-title">Stay Protected</div>
+            <div class="b-step-text">Consistent monthly care keeps paint, coating, and interior in peak condition.</div>
+            <div class="b-step-tags">
+              <span class="b-step-tag gold">Year-Round</span>
+              <span class="b-step-tag">10% Off</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAT: Cars Detailed -->
+    <div class="b-card b-stat b-stat1 reveal reveal-d1">
+      <div>
+        <div class="b-stat-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 13H2a1 1 0 01-1-1v-1l2-4h12l2 4v1a1 1 0 01-1 1h-1"/>
+            <circle cx="6" cy="14.5" r="1.5"/><circle cx="14" cy="14.5" r="1.5"/>
+            <path d="M6 9V7M10 9V6M14 9V7"/>
+          </svg>
+        </div>
+        <div class="b-stat-val" data-count="500" data-suffix="+">0+</div>
+      </div>
+      <div>
+        <div class="b-stat-label">Cars Detailed</div>
+        <div class="b-stat-sub">Happy members across Pampanga and beyond.</div>
+        <div class="b-stat-pill"><span class="pill-dot"></span>Growing fast</div>
+      </div>
+    </div>
+
+    <!-- STAT: Booking Turnaround -->
+    <div class="b-card b-stat b-stat2 reveal reveal-d2">
+      <div>
+        <div class="b-stat-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round">
+            <circle cx="10" cy="10" r="7"/>
+            <path d="M10 6.5V10L12.5 12"/>
+            <path d="M3.5 3.5L2 2M16.5 3.5L18 2"/>
+          </svg>
+        </div>
+        <div class="b-stat-val">24h</div>
+      </div>
+      <div>
+        <div class="b-stat-label">Booking Turnaround</div>
+        <div class="b-stat-sub">Members get confirmed slots within the day.</div>
+        <div class="b-stat-pill"><span class="pill-dot"></span>Priority Access</div>
+      </div>
+    </div>
+
+    <!-- STAT: Rating -->
+    <div class="b-card b-stat b-stat3 reveal reveal-d3">
+      <div>
+        <div class="b-stat-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 2L16 5V11C16 14.3 13.3 16.9 10 18C6.7 16.9 4 14.3 4 11V5L10 2Z"/>
+            <path d="M7 10L9 12L13 8"/>
+          </svg>
+        </div>
+        <div class="b-stat-val">5.0</div>
+      </div>
+      <div>
+        <div class="b-stat-label">Average Rating</div>
+        <div class="b-stat-sub">Consistently rated perfect by our members.</div>
+        <div class="b-stat-pill">
+          <svg width="7" height="7" viewBox="0 0 10 10" fill="rgba(245,197,24,.8)" style="flex-shrink:0"><path d="M5 1L6.2 3.8H9L6.8 5.6L7.6 8.5L5 6.9L2.4 8.5L3.2 5.6L1 3.8H3.8L5 1Z"/></svg>
+          No lock-in
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1602,14 +2602,134 @@ footer#footer{position:relative;z-index:10;background:var(--bg);background:#0000
 
 <!-- FOOTER -->
 <footer id="footer">
-  <div class="footer-cta">
-    <div class="footer-cta-orb"></div>
-    <div class="footer-cta-label">Ready when you are</div>
-    <h2 class="footer-cta-headline">YOUR CAR.<br><span class="gold">OUR MISSION.</span></h2>
-    <p class="footer-cta-text">Premium mobile detailing. Professional results. Zero hassle. We come to you — fully equipped, fully certified.</p>
-    <div class="footer-cta-btns">
-      <button class="btn-footer-primary" onclick="openBookingModal()"><span>Book a Service</span></button>
-      <a href="#membership" class="btn-footer-sec">Join the Inner Circle</a>
+  <!-- ── NEW CTA SECTION ── -->
+  <section class="cta-section">
+
+    <!-- LEFT -->
+    <div class="cta-panel-left">
+      <div class="cta-ready-tag">Ready when you are</div>
+      <h2 class="cta-big-headline">
+        <span class="cta-hl-white"><span class="cta-hl-word">YOUR CAR.</span></span>
+        <span class="cta-hl-gold"><span class="cta-hl-word">OUR MISSION.</span></span>
+      </h2>
+      <p class="cta-left-sub">Premium mobile detailing. Professional results. Zero hassle. We come to you — fully equipped, fully certified.</p>
+      <div class="cta-left-btns">
+        <button class="cta-btn-primary" onclick="openBookingModal()">Book a Service</button>
+        <a href="#membership" class="cta-btn-sec">Join the Inner Circle &rarr;</a>
+      </div>
+    </div>
+
+    <!-- CENTER ORBITAL -->
+    <div class="cta-panel-center">
+      <div class="cta-orb-glow"></div>
+      <div class="cta-ring cta-ring-1"></div>
+      <div class="cta-ring cta-ring-2"></div>
+      <div class="cta-ring cta-ring-3"></div>
+      <div class="cta-ring cta-ring-4"></div>
+      <div class="cta-orbit-dot cta-od1"></div>
+      <div class="cta-orbit-dot cta-od2"></div>
+      <div class="cta-orbit-dot cta-od3"></div>
+      <div class="cta-spark" style="--sx:-62px;--sy:-44px;animation-duration:2.3s;animation-delay:0s"></div>
+      <div class="cta-spark" style="--sx:65px;--sy:-50px;animation-duration:2.0s;animation-delay:.6s"></div>
+      <div class="cta-spark" style="--sx:-48px;--sy:60px;animation-duration:2.6s;animation-delay:1.1s"></div>
+      <div class="cta-spark" style="--sx:72px;--sy:36px;animation-duration:1.8s;animation-delay:1.7s"></div>
+      <div class="cta-spark" style="--sx:30px;--sy:-72px;animation-duration:2.1s;animation-delay:.3s"></div>
+      <div class="cta-spark" style="--sx:-80px;--sy:20px;animation-duration:2.4s;animation-delay:2.0s"></div>
+      <div class="cta-spark" style="--sx:50px;--sy:68px;animation-duration:1.95s;animation-delay:.85s"></div>
+      <div class="cta-spark" style="--sx:-35px;--sy:-80px;animation-duration:2.7s;animation-delay:1.4s"></div>
+      <div class="cta-center-icon">
+        <svg width="32" height="52" viewBox="0 0 28 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="16,0 0,24 11,24 10,46 28,20 17,20" fill="#f5c518"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- RIGHT CAREERS -->
+    <div class="cta-panel-right">
+      <div class="cta-careers-tag">
+        <span class="cta-tag-line"></span>
+        We're hiring
+      </div>
+      <h2 class="cta-careers-headline">
+        <span class="ch-line"><span class="ch-word">WANNA BE</span></span>
+        <span class="ch-line"><span class="ch-word">PART OF</span></span>
+        <span class="ch-line"><span class="ch-word"><span class="cta-ch-accent">OUR CREW?</span></span></span>
+      </h2>
+      <p class="cta-careers-sub">Love cars. Take pride in your work. Come build something with us.</p>
+      <button class="cta-btn-apply" id="ctaApplyBtn">
+        <span class="cta-apply-pulse"></span>
+        Apply Now
+      </button>
+    </div>
+  </section>
+
+  <!-- CAREERS MODAL -->
+  <div class="careers-modal-overlay" id="careersModalOverlay">
+    <div class="careers-modal">
+      <button class="careers-modal-close" id="careersModalClose">&times;</button>
+      <div id="careersFormView">
+        <div class="careers-modal-eyebrow"><span class="careers-pulse-dot"></span> We're hiring</div>
+        <h3 class="careers-modal-h">JOIN THE THUNDER TEAM</h3>
+        <p class="careers-modal-sub">Fill out the form below and we'll reach out. We'd love to have you on board.</p>
+        <div class="careers-perks-grid">
+          <div class="careers-perk"><span class="careers-perk-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6.5" stroke="#f5c518" stroke-width="1.2"/><path d="M8 4.5v1M8 10.5v1M6 7.5c0-.83.67-1.5 1.5-1.5h1a1 1 0 0 1 0 2h-1a1 1 0 0 0 0 2h1c.83 0 1.5-.67 1.5-1.5" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round"/></svg></span><div><div class="careers-perk-title">Competitive Pay</div><div class="careers-perk-desc">Performance-based incentives on top</div></div></div>
+          <div class="careers-perk"><span class="careers-perk-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12.5h12M4 12.5V7M8 12.5V4M12 12.5V7" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round"/><path d="M6 4h4M8 2v2" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round"/></svg></span><div><div class="careers-perk-title">Skills Training</div><div class="careers-perk-desc">Certified coating &amp; detailing courses</div></div></div>
+          <div class="careers-perk"><span class="careers-perk-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="#f5c518" stroke-width="1.2"/><path d="M2 6.5h12M5.5 2v2M10.5 2v2" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round"/><path d="M5 9.5h2M9 9.5h2M5 11.5h2" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round"/></svg></span><div><div class="careers-perk-title">Flexible Schedule</div><div class="careers-perk-desc">Part-time &amp; full-time roles available</div></div></div>
+          <div class="careers-perk"><span class="careers-perk-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 13V4M4.5 7.5L8 4l3.5 3.5" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 11h6" stroke="#f5c518" stroke-width="1.2" stroke-linecap="round"/></svg></span><div><div class="careers-perk-title">Career Growth</div><div class="careers-perk-desc">Move up fast in a growing brand</div></div></div>
+        </div>
+        <hr class="careers-modal-divider">
+        <div class="careers-form-row">
+          <div class="careers-field"><label>First Name</label><input type="text" id="cFname" placeholder="Juan"></div>
+          <div class="careers-field"><label>Last Name</label><input type="text" id="cLname" placeholder="dela Cruz"></div>
+        </div>
+        <div class="careers-form-row">
+          <div class="careers-field"><label>Email</label><input type="email" id="cEmail" placeholder="you@email.com"></div>
+          <div class="careers-field"><label>Phone</label><input type="tel" id="cPhone" placeholder="+63 9XX XXX XXXX"></div>
+        </div>
+        <div class="careers-form-row full">
+          <div class="careers-field">
+            <label>Position Applying For</label>
+            <select id="cPosition">
+              <option value="" disabled selected>Select a role...</option>
+              <option>Ceramic Coating Technician</option>
+              <option>PPF &amp; Tint Installer</option>
+              <option>Detailing Specialist</option>
+              <option>Customer Relations</option>
+              <option>Operations / Admin</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="careers-form-row full">
+          <div class="careers-field">
+            <label>Experience</label>
+            <select id="cExperience">
+              <option value="" disabled selected>Years of experience...</option>
+              <option>No experience (willing to train)</option>
+              <option>Less than 1 year</option>
+              <option>1&ndash;2 years</option>
+              <option>3&ndash;5 years</option>
+              <option>5+ years</option>
+            </select>
+          </div>
+        </div>
+        <div class="careers-form-row full">
+          <div class="careers-field">
+            <label>Tell us about yourself</label>
+            <textarea id="cAbout" placeholder="Why do you want to join Thunder Auto Hub? Any relevant skills or experience..."></textarea>
+          </div>
+        </div>
+        <div class="careers-form-check">
+          <input type="checkbox" id="cConsent">
+          <label for="cConsent">I agree to have my information reviewed by the Thunder Auto Hub team for employment consideration.</label>
+        </div>
+        <button class="careers-btn-submit" id="careersSubmitBtn">Submit Application</button>
+      </div>
+      <div class="careers-success-msg" id="careersSuccessView">
+        <div class="careers-success-bolt"><svg width="40" height="40" viewBox="0 0 28 46" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="16,0 0,24 11,24 10,46 28,20 17,20" fill="#f5c518"/></svg></div>
+        <div class="careers-success-h">APPLICATION SENT!</div>
+        <p class="careers-success-p">Thanks for applying to Thunder Auto Hub.<br>We'll review your details and reach out soon.</p>
+      </div>
     </div>
   </div>
   <div class="footer-bottom">
@@ -3050,27 +4170,188 @@ document.getElementById('depBackLink').addEventListener('click',()=>{
 
 updateBookingStep();
 
-/* SIZE SELECTOR (pricing) */
-const sizeHints={Small:'Hatchback / Motorcycle',Medium:'Compact Sedan / Small SUV / MPV',Large:'Large SUV / Full-Size Sedan',XL:'Pickup Truck / Van / Large Van'};
-document.querySelectorAll('.size-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('sizeHint').textContent=sizeHints[btn.dataset.size]||'';
-    document.querySelectorAll('.p-amt').forEach(el=>{const prices=JSON.parse(el.dataset.prices||'{}');const v=prices[btn.dataset.size];if(v!=null)el.textContent=v.toLocaleString()});
-  });
-});
+/* ═══════════════════════════════════════════
+   PRICING — Accordion + Live Panel JS
+═══════════════════════════════════════════ */
 
-/* PRICING FILTER */
-document.querySelectorAll('.pricing-cat').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.pricing-cat').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const f=btn.dataset.pcat;
-    document.querySelectorAll('[data-ptcat-group]').forEach(g=>{g.style.display=(f==='all'||g.dataset.ptcatGroup===f)?'':'none'});
-    document.querySelectorAll('.pt-row[data-pcat]').forEach(r=>{r.style.display=(f==='all'||r.dataset.pcat===f)?'':'none'});
+/* --- Size selector with sliding track --- */
+(function(){
+  const selector=document.getElementById('priceSizeSelector');
+  const track=document.getElementById('priceSizeTrack');
+  const hint=document.getElementById('sizeHint');
+  if(!selector)return;
+  const hints={Small:'City Car / Hatchback',Medium:'Sedan / Small SUV / MPV',Large:'Full-size SUV / Van',XL:'Truck / Fullsize Van / Oversize'};
+  function syncTrack(btn){
+    if(!track||!btn)return;
+    const wr=selector.getBoundingClientRect(),br=btn.getBoundingClientRect();
+    track.style.left=(br.left-wr.left)+'px';
+    track.style.width=br.width+'px';
+    track.style.top='0';track.style.height=br.height+'px';
+  }
+  const activeSzBtn=selector.querySelector('.size-btn.active');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>syncTrack(activeSzBtn)));
+  window.addEventListener('resize',()=>syncTrack(selector.querySelector('.size-btn.active')));
+  selector.querySelectorAll('.size-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      selector.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      syncTrack(btn);
+      if(hint)hint.textContent=hints[btn.dataset.size]||'';
+      /* Update accordion row displayed prices */
+      document.querySelectorAll('.acc-svc-row').forEach(row=>{
+        const prices=JSON.parse(row.dataset.prices||'{}');
+        const v=prices[btn.dataset.size];
+        const amtEl=row.querySelector('.acc-amt');
+        if(amtEl&&v!=null)amtEl.textContent=Number(v).toLocaleString();
+      });
+      /* Update panel if something selected */
+      const activeRow=document.querySelector('.acc-svc-row.active');
+      if(activeRow)selectService(activeRow,true);
+    });
   });
-});
+})();
+
+/* --- Accordion toggle --- */
+function toggleAccordion(id){
+  const group=document.getElementById(id);
+  if(!group)return;
+  const isOpen=group.classList.contains('open');
+  /* close all first */
+  document.querySelectorAll('.acc-group').forEach(g=>g.classList.remove('open'));
+  if(!isOpen)group.classList.add('open');
+}
+
+/* --- Category filter --- */
+(function(){
+  const pillsWrap=document.getElementById('priceCatsPills');
+  const catsTrack=document.getElementById('catsTrack');
+  function syncCatsTrack(btn){
+    if(!pillsWrap||!catsTrack||!btn)return;
+    const wr=pillsWrap.getBoundingClientRect(),br=btn.getBoundingClientRect();
+    catsTrack.style.left=(br.left-wr.left)+'px';
+    catsTrack.style.width=br.width+'px';
+    catsTrack.style.top='0';catsTrack.style.height=br.height+'px';
+  }
+  const activeBtn=pillsWrap&&pillsWrap.querySelector('.pricing-cat.active');
+  if(activeBtn)requestAnimationFrame(()=>requestAnimationFrame(()=>syncCatsTrack(activeBtn)));
+  window.addEventListener('resize',()=>{
+    const a=pillsWrap&&pillsWrap.querySelector('.pricing-cat.active');if(a)syncCatsTrack(a);
+  });
+  document.querySelectorAll('.pricing-cat').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.pricing-cat').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      syncCatsTrack(btn);
+      const f=btn.dataset.pcat;
+      document.querySelectorAll('.acc-group').forEach(g=>{
+        const cat=g.dataset.cat;
+        if(f==='all'||cat===f){g.style.display='';} else {g.style.display='none';g.classList.remove('open');}
+      });
+      const first=[...document.querySelectorAll('.acc-group')].find(g=>g.style.display!=='none');
+      if(first&&!first.classList.contains('open')){first.classList.add('open');}
+    });
+  });
+})();
+
+/* --- Service selection + panel update --- */
+let panelCurrentPrices={};
+let panelCurrentSize='Medium';
+
+function selectService(row,silent){
+  if(!row)return;
+  /* Mark active */
+  document.querySelectorAll('.acc-svc-row').forEach(r=>r.classList.remove('active'));
+  row.classList.add('active');
+
+  const name=row.dataset.name||'Service';
+  const desc=row.dataset.desc||'';
+  const prices=JSON.parse(row.dataset.prices||'{}');
+  const oldPrice=row.dataset.oldprice||'';
+  const hasTravel=row.dataset.travel==='true';
+  const cat=row.dataset.cat||'';
+
+  panelCurrentPrices=prices;
+  /* Get current size from selector */
+  const activeSz=document.querySelector('#priceSizeSelector .size-btn.active');
+  panelCurrentSize=activeSz?activeSz.dataset.size:'Medium';
+
+  /* Sync panel size buttons */
+  document.querySelectorAll('.psz').forEach(b=>{
+    b.classList.toggle('active',b.dataset.sz===panelCurrentSize);
+  });
+
+  /* Update panel content */
+  document.getElementById('panelTag').textContent=cat.charAt(0).toUpperCase()+cat.slice(1);
+  document.getElementById('panelTitle').textContent=name;
+  document.getElementById('panelDesc').textContent=desc;
+
+  /* Animate price */
+  const priceEl=document.getElementById('panelPrice');
+  const v=prices[panelCurrentSize];
+  const formatted=v!=null?Number(v).toLocaleString():'—';
+  if(!silent){
+    priceEl.classList.remove('animate-in');
+    priceEl.classList.add('animate-out');
+    setTimeout(()=>{
+      priceEl.textContent=formatted;
+      priceEl.classList.remove('animate-out');
+      void priceEl.offsetWidth;
+      priceEl.classList.add('animate-in');
+    },200);
+  } else {
+    priceEl.textContent=formatted;
+  }
+
+  /* Old price */
+  const oldEl=document.getElementById('panelOld');
+  if(oldPrice){oldEl.textContent='Was '+oldPrice;oldEl.style.display='';}else{oldEl.style.display='none';}
+  /* Travel note */
+  const travelEl=document.getElementById('panelTravel');
+  travelEl.style.display=hasTravel?'':'none';
+
+  /* Show panel */
+  document.getElementById('panelIdle').style.display='none';
+  document.getElementById('panelActive').style.display='block';
+  document.getElementById('panelActive').classList.add('visible');
+}
+
+/* --- Panel size change --- */
+function changePanelSize(size,btn){
+  document.querySelectorAll('.psz').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  panelCurrentSize=size;
+  const v=panelCurrentPrices[size];
+  const priceEl=document.getElementById('panelPrice');
+  priceEl.classList.remove('animate-in');
+  priceEl.classList.add('animate-out');
+  setTimeout(()=>{
+    priceEl.textContent=v!=null?Number(v).toLocaleString():'—';
+    priceEl.classList.remove('animate-out');
+    void priceEl.offsetWidth;
+    priceEl.classList.add('animate-in');
+  },180);
+  /* Sync top size selector too */
+  document.querySelectorAll('#priceSizeSelector .size-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.size===size);
+  });
+  /* Update track */
+  const activeBtn=document.querySelector('#priceSizeSelector .size-btn.active');
+  const track=document.getElementById('priceSizeTrack');
+  const selector=document.getElementById('priceSizeSelector');
+  if(track&&activeBtn&&selector){
+    const wr=selector.getBoundingClientRect(),br=activeBtn.getBoundingClientRect();
+    track.style.left=(br.left-wr.left)+'px';track.style.width=br.width+'px';
+  }
+  /* Update accordion amt */
+  const activeRow=document.querySelector('.acc-svc-row.active');
+  if(activeRow){const amtEl=activeRow.querySelector('.acc-amt');if(amtEl&&v!=null)amtEl.textContent=Number(v).toLocaleString();}
+}
+
+/* Auto-open first accordion on page load */
+(function(){
+  const first=document.querySelector('.acc-group');
+  if(first)first.classList.add('open');
+})();
 
 /* WHY TRUST US */
 let whyPage=0;
@@ -3093,18 +4374,71 @@ whyPrev.addEventListener('click',()=>goWhyPage(whyPage-1));
 whyNextBtn.addEventListener('click',()=>goWhyPage(whyPage+1));
 whyPrev.disabled=true;
 
-/* MEMBERSHIP SIZE */
-const memPrices={Small:1000,Medium:1200,Large:1500,XL:1750};
-document.querySelectorAll('.mem-size-tab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.mem-size-tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const v=memPrices[btn.dataset.ms];
-    if(v)document.getElementById('memPriceVal').textContent=v.toLocaleString();
+/* MEMBERSHIP BENTO — size tabs + price flip */
+(function(){
+  const tabs=document.querySelectorAll('.b-size-tab');
+  const slider=document.getElementById('bTabSlider');
+  const tabsWrap=document.getElementById('bSizeTabs');
+  const priceEl=document.getElementById('bPriceVal');
+  const benefits=document.querySelectorAll('.b-benefit');
+  const prices={'1000':'1,000','1200':'1,200','1500':'1,500','1750':'1,750'};
+  function positionSlider(tab){
+    if(!slider||!tabsWrap)return;
+    const wr=tabsWrap.getBoundingClientRect(),tr=tab.getBoundingClientRect();
+    slider.style.left=(tr.left-wr.left)+'px';
+    slider.style.width=tr.width+'px';
+    slider.style.top='0';slider.style.height=tr.height+'px';
+  }
+  function initSlider(){const a=document.querySelector('.b-size-tab.active');if(a)positionSlider(a);}
+  requestAnimationFrame(()=>requestAnimationFrame(initSlider));
+  window.addEventListener('resize',initSlider);
+  function flipPrice(v){
+    if(!priceEl)return;
+    priceEl.classList.remove('flip-in');priceEl.classList.add('flip-out');
+    setTimeout(()=>{priceEl.textContent=v;priceEl.classList.remove('flip-out');priceEl.classList.add('flip-in');},185);
+  }
+  tabs.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(btn.classList.contains('active'))return;
+      tabs.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      positionSlider(btn);
+      flipPrice(prices[btn.dataset.price]||btn.dataset.price);
+      benefits.forEach((b,i)=>{b.classList.remove('flash');setTimeout(()=>b.classList.add('flash'),i*40);});
+    });
   });
-});
+  // 3D tilt removed from membership cards
+})();
 
-/* AREA CHECK */
+/* CAREERS MODAL */
+(function(){
+  const overlay = document.getElementById('careersModalOverlay');
+  const applyBtn = document.getElementById('ctaApplyBtn');
+  const closeBtn = document.getElementById('careersModalClose');
+  const submitBtn = document.getElementById('careersSubmitBtn');
+  const formView = document.getElementById('careersFormView');
+  const successView = document.getElementById('careersSuccessView');
+  if(!overlay||!applyBtn)return;
+  applyBtn.addEventListener('click',()=>overlay.classList.add('open'));
+  closeBtn.addEventListener('click',()=>overlay.classList.remove('open'));
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('open');});
+  submitBtn.addEventListener('click',()=>{
+    const fname=document.getElementById('cFname').value.trim();
+    const email=document.getElementById('cEmail').value.trim();
+    const position=document.getElementById('cPosition').value;
+    const consent=document.getElementById('cConsent').checked;
+    if(!fname||!email||!position||!consent){
+      submitBtn.style.boxShadow='inset 0 0 0 1px rgba(239,68,68,.5)';
+      setTimeout(()=>submitBtn.style.boxShadow='',1500);return;
+    }
+    formView.style.display='none';
+    successView.classList.add('show');
+    setTimeout(()=>{
+      overlay.classList.remove('open');
+      setTimeout(()=>{formView.style.display='block';successView.classList.remove('show');},400);
+    },2800);
+  });
+})();
 function checkArea(){
   const val=document.getElementById('areaInput').value.trim().toLowerCase();
   if(!val)return;
@@ -3128,6 +4462,9 @@ document.querySelectorAll('.cf-card').forEach(card=>{
   const bloom=document.createElement('div');bloom.className='cf-bloom';card.appendChild(bloom);
   const refl=document.createElement('div');refl.className='cf-reflection';card.appendChild(refl);
 });
+/* Inject glass top edge into b-steps card */
+const bStepsCard=document.querySelector('.b-steps');
+if(bStepsCard){const gte=document.createElement('div');gte.className='b-steps-glass-topedge';bStepsCard.prepend(gte);}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
